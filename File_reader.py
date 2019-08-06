@@ -19,6 +19,7 @@ class File_reader:
 			for stop_word in stop_words_file:
 				self.stop_words.append(stop_word.rstrip())
 
+	#TODO: lemmatization?
 	def pre_process(self, word):
 		"""
 		Preprocesses a word by turning it to lower case,
@@ -99,12 +100,5 @@ class File_reader:
 		return data"""
 
 
-data =[{"text":"hello how are you 23 //?", 'labels': ["us"]},
-					{"text":"2hello how are you?", 'labels': ["us", 'canada']}]
-
-reader = File_reader(data)
-#print(reader.pre_process("h!ello 2.343 !!!@#!@#!how"))
-print(reader.words)
-words, labels=reader.build_set_tfidf()
-print(words, labels)
-x=2
+#data =[{"text":"telaviv is great 23 shalom ma kore //?", 'labels': ["us"]},
+#					{"text":"2tel aviv ya habibi tel-aviv?", 'labels': ["us", 'canada']}]
