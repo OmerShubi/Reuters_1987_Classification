@@ -45,6 +45,10 @@ def get_text(article):
 
 
 def parsing(file_path):
+    """
+    :param file_path:
+    :return:
+    """
     with open(file_path) as f:
         f.readline()
         raw_data = "<xml>" + f.read() + "</xml>"
@@ -55,7 +59,10 @@ def parsing(file_path):
 
 
 def parsing_data(directory_path):
-    """Gets directory - str - path to raw data directory"""
+    """
+    :param directory_path - string type:
+    :return: Returns list of dictionaries with TEXT and LABELS keys for each article
+    """
     final_data = []
     first_file = True
 
