@@ -102,5 +102,3 @@ class File_reader:
 
 #data =[{"text":"telaviv is great 23 shalom ma kore //?", 'labels': ["us"]},
 #					{"text":"2tel aviv ya habibi tel-aviv?", 'labels': ["us", 'canada']}]
-
-
