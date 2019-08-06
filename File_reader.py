@@ -1,4 +1,3 @@
-# import pickle
 import re
 import math
 import numpy as np
@@ -72,11 +71,12 @@ class File_reader:
 
     def build_set_tfidf(self):
         """
-		Builds the data vector using tfidf format
+        Builds the data vector using tfidf format
 		:return: the file in vector form, using tfidf format
-		"""
-        doc_set = []
-        labels_set = []
+        """
+        index = 0
+        doc_set = np.empty([self.number_of_docs, len(self.words)])
+        labels_set = np.empty([self.number_of_docs, len(self.labels)])
         for article in self.data_articles:
             vec = len(self.words) * [0]
             for word in article["text"].split():
@@ -90,17 +90,16 @@ class File_reader:
                     continue
                 else:
                     vec[self.words[word]] = vec[self.words[word]] * math.log(
-                        (self.number_of_docs / self.df[word]), 10
-                    )
-            doc_set.append(vec)
+                        (self.number_of_docs / self.df[word]), 10)
+            np.append(doc_set, vec)
             if not self.istest:
                 vec_labels = len(self.labels) * [0]
                 for label in article["labels"]:
                     vec_labels[self.labels[label]] = 1
-                labels_set.append(vec_labels)
+                np.append(labels_set, vec_labels)
         if self.istest:
-            return np.ndarray(doc_set)
-        return np.ndarray(doc_set), np.ndarray(labels_set)
+            return doc_set
+        return doc_set, labels_set
 
     """def unpickle(file):
 		with open(file, 'rb') as f:
