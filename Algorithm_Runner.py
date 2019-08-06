@@ -2,9 +2,11 @@ import math
 import numpy as np
 import KNN
 import NearestCentroid
-NEIGHBORS 10
 
-class AlgorithmRunner:
+NEIGHBORS = 10
+
+
+class Algorithm_Runner:
     def __init__(self, classifier):
         """
         Initializes the AlgorithRunner with the desired classifier
@@ -66,14 +68,17 @@ class AlgorithmRunner:
         return correct / total
 
     @staticmethod
-    def cosine_similarity(a, b):
-        """
-        Calculates cosine similarity between two lists of doubles
+    def f1_score(expected, predicted):
+        tp = 0
+        for e, p in zip(expected, predicted):
+            if e == p and p == 1:
+                tp += 1
+        tp_plus_fp = np.sum(predicted)
+        tp_plus_fn = np.sum(expected)
 
-        Assumes lists are of same length
-        :param a: list of doubles
-        :param b: list of doubles
-        :return: cosine similarity, double
-        """
-        return np.dot(a, b) / (np.norm(a) * np.norm(b))
-
+        recall = tp/tp_plus_fn
+        precision = tp/tp_plus_fp
+        print("recall:", recall)
+        print("precision:", precision)
+        f1 = 2*precision*recall/(recall+precision)
+        return f1
