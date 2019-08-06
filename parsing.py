@@ -45,6 +45,10 @@ def get_text(article):
 
 
 def parsing(file_path):
+    """
+    :param file_path:
+    :return:
+    """
     with open(file_path) as f:
         f.readline()
         raw_data = "<xml>" + f.read() + "</xml>"
@@ -54,12 +58,18 @@ def parsing(file_path):
         return data
 
 
-final_data = []
-first_file = True
-for root, dirs, files in os.walk("Raw Data - DO NOT CHANGE/reuters_train_data", topdown=False):
-    for name in files:
-        if first_file:
-            first_file = False
-            continue
-        final_data = final_data + parsing(os.path.join(root, name))
+def parsing_data(directory_path):
+    """
+    :param directory_path - string type:
+    :return: Returns list of dictionaries with TEXT and LABELS keys for each article
+    """
+    final_data = []
+    first_file = True
 
+    for root, dirs, files in os.walk(directory_path, topdown=False):
+        for name in files:
+            if first_file:
+                first_file = False
+                continue
+            final_data = final_data + parsing(os.path.join(root, name))
+    return final_data
