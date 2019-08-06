@@ -8,5 +8,6 @@ def main():
     data.build_set_tfidf()
 
 if __name__ == "__main__":
+
     main()
 
