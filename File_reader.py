@@ -74,7 +74,6 @@ class File_reader:
         Builds the data vector using tfidf format
 		:return: the file in vector form, using tfidf format
         """
-        index = 0
         doc_set = np.empty([self.number_of_docs, len(self.words)])
         labels_set = np.empty([self.number_of_docs, len(self.labels)])
         for article in self.data_articles:
@@ -91,12 +90,13 @@ class File_reader:
                 else:
                     vec[self.words[word]] = vec[self.words[word]] * math.log(
                         (self.number_of_docs / self.df[word]), 10)
-            np.append(doc_set, vec)
+            doc_set = np.append(doc_set, vec, axis=0)
+            print(doc_set.shape, doc_set.size)
             if not self.istest:
                 vec_labels = len(self.labels) * [0]
                 for label in article["labels"]:
                     vec_labels[self.labels[label]] = 1
-                np.append(labels_set, vec_labels)
+                labels_set = np.append(labels_set, vec_labels, axis=0)
         if self.istest:
             return doc_set
         return doc_set, labels_set

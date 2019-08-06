@@ -27,7 +27,7 @@ class Model:
     def predict(self, path_to_test_set):
         predictions = []
         k = 5
-        raw_test = parsing.parsing_data(path_to_test_set)
+        raw_test = parsing.parsing_data(path_to_test_set, True)
         data_test = File_reader.File_reader(raw_test, istest=True)
         test_features = data_test.build_set_tfidf()
         for index in range(test_features.shape[0]):
