@@ -56,7 +56,7 @@ class Model:
         distances = []
 
         for x in range(np.ma.size(training_set, 1)):
-            dist = euclidean_distance(training_set[:, x].tolist(), test_instance)
+            dist = Calculations.cosine_similarity()euclidean_distance(training_set[:, x].tolist(), test_instance)
             distances.append(dist)
 
         distances = np.array(distances, dtype=float)

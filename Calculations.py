@@ -1,6 +1,6 @@
 import numpy as np
 
-def cosine_similarity(list1, list2):
+def cosine_distance(list1, list2):
     """
     Calculates cosine similarity between two lists
 
@@ -22,7 +22,7 @@ def distances(test, train):
     """
     distances = []
     for i in range(len(test)):
-        distances.append(cosine_similarity(test[i], train))
+        distances.append(cosine_distance(test[i], train))
     return distances
 
 
