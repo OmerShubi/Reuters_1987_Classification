@@ -68,7 +68,13 @@ class Algorithm_Runner:
         return correct / total
 
     @staticmethod
-    def f1_score(expected, predicted):
+    def f1_score_label(expected, predicted):
+        """
+
+        :param expected:  list of predictions for a specific label
+        :param predicted:
+        :return:
+        """
         tp = 0
         for e, p in zip(expected, predicted):
             if e == p and p == 1:
@@ -78,7 +84,21 @@ class Algorithm_Runner:
 
         recall = tp/tp_plus_fn
         precision = tp/tp_plus_fp
-        print("recall:", recall)
-        print("precision:", precision)
+
         f1 = 2*precision*recall/(recall+precision)
         return f1
+
+    @staticmethod
+    def f1_score(all_expected, all_predicted):
+        """
+
+        :param all_expected:  expects list of list
+        :param all_predicted:
+        :return:
+        """
+        f1 = 0
+        for expected, predicted in zip(all_expected, all_predicted):
+            f1 += Algorithm_Runner.f1_score_label(expected,predicted)
+        return f1/len(all_predicted)
+
+
