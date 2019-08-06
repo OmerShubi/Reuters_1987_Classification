@@ -10,7 +10,7 @@ import File_reader
 
 class Model:
     def __init__(self, path_to_precooked_data):
-        raw_data = parsing.parsing_data(path_to_precooked_data)
+        raw_data = parsing.parsing_data(path_to_precooked_data, False)
         print("finished parsing")
         data = File_reader.File_reader(raw_data)
         self.inv_labels = data.inv_labels
