@@ -13,7 +13,7 @@ import os
 
 def create_labels(article):
     """ Gets an article object (ordered dictionary).
-        Returns a list of labels based on existing labels in received article. """
+        Returns a list of labels based on existing labels in the received article. """
 
     labels = []
     labels_type = ["TOPICS", "PLACES", "PEOPLE", "ORGS", "EXCHANGES", "COMPANIES"]
