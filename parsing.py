@@ -32,15 +32,26 @@ def create_labels(article):
     return flat_labels
 
 
+def get_dateline(article):
+    """
+    :param article:
+    :return:
+    """
+    if 'DATELINE' in article['TEXT']:
+        return article['TEXT']['DATELINE'].split(',')[0]
+    else:
+        return ""
+
+
 def get_text(article):
     """ Gets an article object (ordered dictionary).
         Returns the text of the received article. """
 
     text_to_return = ""
     if 'TITLE' in article['TEXT']:
-        text_to_return = text_to_return + article['TEXT']['TITLE']
+        text_to_return = text_to_return + " " + article['TEXT']['TITLE']
     if 'BODY' in article['TEXT']:
-        text_to_return = text_to_return + article['TEXT']['BODY']
+        text_to_return = text_to_return + " " + article['TEXT']['BODY']
     return text_to_return
 
 
@@ -55,14 +66,15 @@ def parsing(file_path, test):
         raw_data = raw_data.replace('&', "").replace('#', "")
         data_dict = pr.data(fromstring(raw_data), preserve_root=True)
         if test:
-            data = [{"labels": "", "text": get_text(article)} for article in data_dict['xml']['REUTERS']]
+            data = [{"labels": "", "text": get_text(article), "dateline": get_dateline(article)} for article in data_dict['xml']['REUTERS']]
         else:
-            data = [{"labels": create_labels(article), "text": get_text(article)} for article in data_dict['xml']['REUTERS']]
+            data = [{"labels": create_labels(article), "text": get_text(article), "dateline": get_dateline(article)} for article in data_dict['xml']['REUTERS']]
         return data
 
 
 def parsing_data(directory_path, test):
     """
+    :param test:
     :param directory_path:
     :param directory_path - string type:
     :return: Returns list of dictionaries with TEXT and LABELS keys for each article
@@ -75,7 +87,6 @@ def parsing_data(directory_path, test):
             if first_file:
                 first_file = False
                 continue
-            final_data = final_data + parsing(os.path.join(root, name),test)
+            final_data = final_data + parsing(os.path.join(root, name), test)
     return final_data
-
 
