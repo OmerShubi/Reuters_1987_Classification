@@ -44,7 +44,7 @@ def get_text(article):
     return text_to_return
 
 
-def parsing(file_path):
+def parsing(file_path, test):
     """
     :param file_path:
     :return:
@@ -54,11 +54,14 @@ def parsing(file_path):
         raw_data = "<xml>" + f.read() + "</xml>"
         raw_data = raw_data.replace('&', "").replace('#', "")
         data_dict = pr.data(fromstring(raw_data), preserve_root=True)
-        data = [{"labels": create_labels(article), "text": get_text(article)} for article in data_dict['xml']['REUTERS'] ]
+        if test:
+            data = [{"labels": "", "text": get_text(article)} for article in data_dict['xml']['REUTERS']]
+        else:
+            data = [{"labels": create_labels(article), "text": get_text(article)} for article in data_dict['xml']['REUTERS']]
         return data
 
 
-def parsing_data(directory_path):
+def parsing_data(directory_path,test):
     """
     :param directory_path - string type:
     :return: Returns list of dictionaries with TEXT and LABELS keys for each article
@@ -71,5 +74,5 @@ def parsing_data(directory_path):
             if first_file:
                 first_file = False
                 continue
-            final_data = final_data + parsing(os.path.join(root, name))
+            final_data = final_data + parsing(os.path.join(root, name),test)
     return final_data
