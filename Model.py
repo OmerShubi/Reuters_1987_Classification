@@ -10,7 +10,7 @@ import File_reader
 
 class Model:
     def __init__(self, path_to_precooked_data):
-        raw_data = parsing.parsing_data(path_to_precooked_data)
+        raw_data = parsing.parsing_data(path_to_precooked_data, False)
         print("finished parsing")
         data = File_reader.File_reader(raw_data)
         self.inv_labels = data.inv_labels
@@ -56,7 +56,7 @@ class Model:
         distances = []
 
         for x in range(np.ma.size(training_set, 1)):
-            dist = euclidean_distance(training_set[:, x].tolist(), test_instance)
+            dist = Calculations.cosine_similarity()euclidean_distance(training_set[:, x].tolist(), test_instance)
             distances.append(dist)
 
         distances = np.array(distances, dtype=float)
