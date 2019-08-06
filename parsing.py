@@ -13,7 +13,7 @@ import os
 
 def create_labels(article):
     """ Gets an article object (ordered dictionary).
-        Returns a list of labels based on existing labels in received article. """
+        Returns a list of labels based on existing labels in the received article. """
 
     labels = []
     labels_type = ["TOPICS", "PLACES", "PEOPLE", "ORGS", "EXCHANGES", "COMPANIES"]
@@ -45,19 +45,21 @@ def get_text(article):
 
 
 def parsing(file_path):
-    with open("Raw Data - DO NOT CHANGE/reuters_train_data/r480.sgm") as f:
+    with open(file_path) as f:
         f.readline()
         raw_data = "<xml>" + f.read() + "</xml>"
         raw_data = raw_data.replace('&', "").replace('#', "")
-        # print(json.dumps(pr.data(fromstring(data), preserve_root=True)))
         data_dict = pr.data(fromstring(raw_data), preserve_root=True)
         data = [{"labels": create_labels(article), "text": get_text(article)} for article in data_dict['xml']['REUTERS'] ]
         return data
 
 
 final_data = []
-
+first_file = True
 for root, dirs, files in os.walk("Raw Data - DO NOT CHANGE/reuters_train_data", topdown=False):
     for name in files:
+        if first_file:
+            first_file = False
+            continue
         final_data = final_data + parsing(os.path.join(root, name))
 
