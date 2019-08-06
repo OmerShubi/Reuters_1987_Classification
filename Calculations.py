@@ -26,4 +26,36 @@ def distances(test, train):
     return distances
 
 
+def f1_score_label(expected, predicted):
+    """
+
+    :param expected:  list of predictions for a specific label
+    :param predicted:
+    :return:
+    """
+    tp = 0
+    for e, p in zip(expected, predicted):
+        if e == p and p == 1:
+            tp += 1
+    tp_plus_fp = np.sum(predicted)
+    tp_plus_fn = np.sum(expected)
+
+    recall = tp/tp_plus_fn
+    precision = tp/tp_plus_fp
+
+    f1 = 2*precision*recall/(recall+precision)
+    return f1
+
+
+def f1_score(all_expected, all_predicted):
+    """
+
+    :param all_expected:  expects list of list
+    :param all_predicted:
+    :return:
+    """
+    f1 = 0
+    for expected, predicted in zip(all_expected, all_predicted):
+        f1 += f1_score_label(expected,predicted)
+    return f1/len(all_predicted)
 

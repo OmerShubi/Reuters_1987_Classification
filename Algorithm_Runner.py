@@ -2,17 +2,21 @@ import math
 import numpy as np
 import KNN
 import NearestCentroid
+import File_reader
 
+# TODO: different values
 NEIGHBORS = 10
 
 
 class Algorithm_Runner:
-    def __init__(self, classifier):
+    def __init__(self, classifier, data,data_labels):
         """
         Initializes the AlgorithRunner with the desired classifier
         :param classifier_method: desired classifier, expects 'KNN' or 'Rocchio'
         """
         self.algorithm = self.select_model(classifier)
+        self.data = data
+        self.data_labels = data_labels
         self.accuracy = 0
         self.precision = 0
         self.recall = 0
@@ -45,7 +49,15 @@ class Algorithm_Runner:
         :param x_test: test data
         :return: The predicted class C for each sample in x_test
         """
-        return self.algorithm.predict(x_test)
+        predictions = []
+        data_test = File_reader.File_reader(x_test)
+        data_test.parse("Raw Data - DO NOT CHANGE/reuters_train_data")
+        test_features, test_labels=data_test.build_set_tfidf() # the test_lables is empty
+        for index in range(test_features.shape[0]):
+            instance = test_features[index]
+            prediction_binary = KNN.predict(instance, self.data, self.data_labels, NEIGHBORS)
+            predictions.append(prediction_binary)
+        return predictions
 
     def cross_val(self):
         pass

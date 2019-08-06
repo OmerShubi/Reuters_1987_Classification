@@ -1,13 +1,15 @@
+import numpy as np
+
 import parsing
 import File_reader
+import Model
 
 def main():
-    rawdata = parsing.parsing_data("Raw Data - DO NOT CHANGE/reuters_train_data")
-    print("finished parsing")
-    data = File_reader.File_reader(rawdata)
-    data.build_set_tfidf()
+
+    model = Model.Model("reuters_train_data")
+    predictions = model.predict("reuters_test_data")
+    print(predictions)
+
 
 if __name__ == "__main__":
-
     main()
-
