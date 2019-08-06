@@ -54,12 +54,15 @@ def parsing(file_path):
         return data
 
 
-final_data = []
-first_file = True
-for root, dirs, files in os.walk("Raw Data - DO NOT CHANGE/reuters_train_data", topdown=False):
-    for name in files:
-        if first_file:
-            first_file = False
-            continue
-        final_data = final_data + parsing(os.path.join(root, name))
+def parsing_data(directory_path):
+    """Gets directory - str - path to raw data directory"""
+    final_data = []
+    first_file = True
 
+    for root, dirs, files in os.walk(directory_path, topdown=False):
+        for name in files:
+            if first_file:
+                first_file = False
+                continue
+            final_data = final_data + parsing(os.path.join(root, name))
+    return final_data
