@@ -15,8 +15,7 @@ class File_reader:
         self.labels = {}
         self.create_stop_words_list()
         self.create_words_bank()
-
-    # self.inv_words = {v: k for k, v in self.words.items()}
+        self.inv_labels = {v: k for k, v in self.labels.items()}
 
     def create_stop_words_list(self):
         with open("./stop_words.txt") as stop_words_file:

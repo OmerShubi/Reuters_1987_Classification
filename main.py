@@ -1,3 +1,5 @@
+import numpy as np
+
 import parsing
 import File_reader
 import Model
@@ -11,9 +13,6 @@ def main():
     print("finished parsing")
     data = File_reader.File_reader(rawdata)
     train_features_raw, train_labels_raw = data.build_set_tfidf()
-
-
-
 
 
 if __name__ == "__main__":
