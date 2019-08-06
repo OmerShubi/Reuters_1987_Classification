@@ -17,11 +17,13 @@ class Model:
         print("Building tfidf set...")
         self.train_features, self.train_labels = data.build_set_tfidf()
         print("Build tfidf set COMPLETE")
-        # TODO remove bfore submission
-        with open("train_features", "ab") as filename:
-            pickle.dump(self.train_features, filename)
-        with open("train_labels", "ab") as filename:
-            pickle.dump(self.train_labels, filename)
+        # TODO remove before submission
+        try:
+            pickle.dump(self.train_features, open("train_features", 'w'), protocol=4)
+            pickle.dump(self.train_labels, open("train_labels", 'w'), protocol=4)
+        except:
+            pass
+
         ### Till here
 
     def predict(self, path_to_test_set):

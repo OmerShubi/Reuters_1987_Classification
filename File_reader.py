@@ -74,8 +74,8 @@ class File_reader:
         Builds the data vector using tfidf format
 		:return: the file in vector form, using tfidf format
         """
-        doc_set = np.empty((0, len(self.words)))
-        labels_set = np.empty((0, len(self.labels)))
+        doc_set = []
+        labels_set = []
         for article in self.data_articles:
             vec = len(self.words) * [0.0]
             for word in article["text"].split():
@@ -90,20 +90,13 @@ class File_reader:
                 else:
                     vec[self.words[word]] = vec[self.words[word]] * math.log(
                         (self.number_of_docs / self.df[word]), 10)
-            doc_set = np.append(doc_set, np.array([vec]), axis=0)
+            doc_set.append(vec)
             if not self.istest:
                 vec_labels = len(self.labels) * [0]
                 for label in article["labels"]:
                     vec_labels[self.labels[label]] = 1
-                labels_set = np.append(labels_set, np.array([vec_labels]), axis=0)
+                labels_set.append(vec_labels)
         if self.istest:
-            return doc_set
-        return doc_set, labels_set
+            return np.array(doc_set)
 
-    """def unpickle(file):
-		with open(file, 'rb') as f:
-			data = pickle.load(f, encoding='bytes')
-		return data"""
-
-# data =[{"text":"telaviv is great 23 shalom ma kore //?", 'labels': ["us"]},
-# 					{"text":"2tel aviv ya habibi tel-aviv?", 'labels': ["us", 'canada']}]
+        return np.array(doc_set), np.array(labels_set)
