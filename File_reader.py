@@ -1,6 +1,7 @@
 #import pickle
 import re
 import math
+import numpy as np
 
 class File_reader:
 	def __init__(self, data_articles):
@@ -91,7 +92,7 @@ class File_reader:
 			for label in article['labels']:
 				vec_labels[self.labels[label]] = 1
 			labels_set.append(vec_labels)
-		return doc_set, labels_set
+		return np.ndarray(doc_set), np.ndarray(labels_set)
 
 
 	"""def unpickle(file):
