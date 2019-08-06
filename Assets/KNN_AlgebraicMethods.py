@@ -57,7 +57,6 @@ def euclidean_distance(instance1, instance2, length):
 		distance += pow((instance1[x] - instance2[x]), 2)
 	return math.sqrt(distance)
 
-
 def k_nearest_neighbors(training_set, test_instance, training_labels, k):
 	"""
 	kNN algorithm. Returns proposed label of a given test image 'test_instance', by finding the
