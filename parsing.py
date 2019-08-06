@@ -61,8 +61,9 @@ def parsing(file_path, test):
         return data
 
 
-def parsing_data(directory_path,test):
+def parsing_data(directory_path, test):
     """
+    :param directory_path:
     :param directory_path - string type:
     :return: Returns list of dictionaries with TEXT and LABELS keys for each article
     """
