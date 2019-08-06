@@ -77,3 +77,4 @@ def parsing_data(directory_path, test):
                 continue
             final_data = final_data + parsing(os.path.join(root, name),test)
     return final_data
+
