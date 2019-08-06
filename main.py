@@ -6,7 +6,7 @@ import Model
 
 def main():
 
-    model = Model.Model('.')
+    model = Model.Model("reuters_train_data")
     predictions = model.predict("reuters_test_data")
     print(predictions)
 
