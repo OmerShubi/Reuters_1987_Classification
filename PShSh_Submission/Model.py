@@ -7,10 +7,10 @@ import parsing
 NEIGHBORS = 5
 
 class Model:
-    def __init__(self, path_to_precooked_data):
+    def __init__(self):
 
         # Parsing train data...
-        raw_data = parsing.parsing_data(path_to_precooked_data, False)
+        raw_data = parsing.parsing_data("train_data", False)
 
         # parse train data COMPLETE
         self.data = File_reader.File_reader(raw_data)
@@ -104,5 +104,4 @@ class Model:
         :param list2: list
         :return: cosine similarity
         """
-
         return 1-(np.dot(list1, list2) / (np.linalg.norm(list1) * np.linalg.norm(list2)))
