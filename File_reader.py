@@ -67,7 +67,6 @@ class File_reader:
                 if label not in self.labels.keys():  # if the label doesnt already exists in the labels dictionary
                     self.labels[label] = index2  # add it
                     index2 += 1
-        # print(self.labels)
 
     def build_set_tfidf(self):
         """
@@ -91,11 +90,13 @@ class File_reader:
                     vec[self.words[word]] = vec[self.words[word]] * math.log(
                         (self.number_of_docs / self.df[word]), 10)
             doc_set.append(vec)
+        # return np.array(doc_set)
             vec_labels = len(self.labels) * [0]
             for label in article["labels"]:
                 vec_labels[self.labels[label]] = 1
             labels_set.append(vec_labels)
         return np.array(doc_set), np.array(labels_set)
+
 
     def parse_test(self, test_articles, debug=False):
         """
@@ -121,7 +122,6 @@ class File_reader:
                 else:
                     vec[self.words[word]] = vec[self.words[word]] * math.log((self.number_of_docs / self.df[word]), 10)
             doc_set.append(vec)
-
 
             if debug:
                 vec_labels = len(self.labels) * [0]

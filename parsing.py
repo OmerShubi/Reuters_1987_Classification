@@ -92,9 +92,3 @@ def parsing_data(directory_path, is_test):
                 continue
     return final_data
 
-
-# print(parsing_data('test', False)[0])
-# print(parsing_data('test', False)[223])
-# for elem in parsing_data('test', False):
-#     print(elem)
-
