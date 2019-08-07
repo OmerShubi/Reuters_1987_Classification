@@ -1,23 +1,27 @@
 import pickle
 import numpy as np
-
-import Calculations
 import File_reader
 import parsing
 NEIGHBORS = 5
-
+import os
 class Model:
-    def __init__(self):
+    def __init__(self, path_train_dir):
 
+        path = os.path.join(path_train_dir,"train_data")
         # Parsing train data...
-        raw_data = parsing.parsing_data("train_data", False)
+        raw_data = parsing.parsing_data(path, False)
 
         # parse train data COMPLETE
-        self.data = File_reader.File_reader(raw_data)
-        self.inv_labels = self.data.inv_labels
+        # self.data = File_reader.File_reader(raw_data)
+        self.data = pickle.load(open("data.zip", 'rb'))
+
+        # self.inv_labels = self.data.inv_labels
+        self.inv_labels = pickle.load(open("inv_labels.zip", 'rb'))
 
         # Creating train_features and train_labels...
-        self.train_features, self.train_labels = self.data.build_set_tfidf()
+        # self.train_features, self.train_labels = self.data.build_set_tfidf()
+        self.train_features = self.data.build_set_tfidf()
+        self.train_labels = pickle.load(open("train_labels.zip", 'rb'))
 
         # Creating train_features and train_labels COMPLETE
         # print(Number of train articles:", self.train_features.shape[0])
@@ -26,10 +30,13 @@ class Model:
         # Restoring train features and labels from pickle..
         # self.train_features = pickle.load(open("train_features.p", 'rb'))
         # self.train_labels = pickle.load(open("train_labels.p", 'rb'))
-        # self.data = pickle.load(open("data.p", 'rb'))
-        # self.inv_labels = pickle.load(open("inv_labels.p", 'rb'))
 
     def predict(self, path_to_test_set):
+        """
+
+        :param path_to_test_set:
+        :return:
+        """
         predictions = []
         k = NEIGHBORS
         # Parsing test data...
@@ -50,6 +57,11 @@ class Model:
         return tuple(predictions)
 
     def labels_from_prediction(self, binary_predictions):
+        """
+
+        :param binary_predictions:
+        :return:
+        """
         predicted_labels = []
         indexes = np.where(binary_predictions)[0]
         for index in indexes:
@@ -57,6 +69,12 @@ class Model:
         return tuple(predicted_labels)
 
     def knn_predict(self, instance, k):
+        """
+
+        :param instance:
+        :param k:
+        :return:
+        """
         closest_neighbors_labels = self.k_nearest_neighbors(instance, k)
         return Model.best_neighbor_match_check(closest_neighbors_labels,k)
 
@@ -83,6 +101,12 @@ class Model:
 
     @staticmethod
     def best_neighbor_match_check(k_neighbors_labels, k):
+        """
+
+        :param k_neighbors_labels:
+        :param k:
+        :return:
+        """
         """	Returns the values with the most repetitions in `k_neighbors`. """
         length = k_neighbors_labels.shape[1]-1
         labels = []
