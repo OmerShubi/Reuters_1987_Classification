@@ -1,7 +1,7 @@
 import re
 import math
 import numpy as np
-
+import pickle
 
 class File_reader:
     def __init__(self, data_articles, istest=False):
@@ -11,6 +11,7 @@ class File_reader:
         self.df = {}
         self.words = {}
         self.stop_words = []
+        self.labels = {}
         self.labels = {}
         self.create_stop_words_list()
         self.create_words_bank()
@@ -30,9 +31,9 @@ class File_reader:
 		:param word: string
 		:return: updated word - string
 		"""
-        strip_specail_chars = re.compile("[^A-Za-z ]+")
+        strip_special_chars = re.compile("[^A-Za-z ]+")
         word = word.lower().replace("<br />", " ")
-        word = re.sub(strip_specail_chars, "", word.lower())
+        word = re.sub(strip_special_chars, "", word.lower())
         # returns empty string if word is a stop word
         if word in self.stop_words:
             return ""
@@ -67,7 +68,6 @@ class File_reader:
                 if label not in self.labels.keys():  # if the label doesnt already exists in the labels dictionary
                     self.labels[label] = index2  # add it
                     index2 += 1
-        # print(self.labels)
 
     def build_set_tfidf(self):
         """
@@ -91,11 +91,14 @@ class File_reader:
                     vec[self.words[word]] = vec[self.words[word]] * math.log(
                         (self.number_of_docs / self.df[word]), 10)
             doc_set.append(vec)
+        # return np.array(doc_set)
             vec_labels = len(self.labels) * [0]
             for label in article["labels"]:
                 vec_labels[self.labels[label]] = 1
             labels_set.append(vec_labels)
         return np.array(doc_set), np.array(labels_set)
+        # return np.array(doc_set), pickle.load(open("train_labels.p", 'rb'))
+
 
     def parse_test(self, test_articles, debug=False):
         """
@@ -121,7 +124,6 @@ class File_reader:
                 else:
                     vec[self.words[word]] = vec[self.words[word]] * math.log((self.number_of_docs / self.df[word]), 10)
             doc_set.append(vec)
-
 
             if debug:
                 vec_labels = len(self.labels) * [0]
