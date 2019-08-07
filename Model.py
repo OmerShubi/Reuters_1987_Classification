@@ -14,30 +14,35 @@ class Model:
         print("parse train data COMPLETE")
         self.data = File_reader.File_reader(raw_data)
         self.inv_labels = self.data.inv_labels
-        print("Building tfidf set...")
+        print("Creating train_features and train_labels...")
         self.train_features, self.train_labels = self.data.build_set_tfidf()
-        print("Build tfidf set COMPLETE")
+        print("Creating train_features and train_labels COMPLETE")
         # TODO remove before submission
-        try:
-            pickle.dump(self.train_features, open("train_features", 'w'), protocol=4)
-            pickle.dump(self.train_labels, open("train_labels", 'w'), protocol=4)
-        except:
-            pass
+        # try:
+        #     pickle.dump(self.train_features, open("train_features", 'w'), protocol=4)
+        #     pickle.dump(self.train_labels, open("train_labels", 'w'), protocol=4)
+        # except:
+        #     pass
 
         ### Till here
 
     def predict(self, path_to_test_set):
         predictions = []
-        k = 3
+        k = 1
+        print("Parsing test data...")
         raw_test = parsing.parsing_data(path_to_test_set, True)
+        print("parse test data COMPLETE")
+        print("Creating test_features...")
         test_features = self.data.parse_test(raw_test)
+        print("Creating test_features COMPLETE")
+        print("Running KNN...")
         for index in range(test_features.shape[0]):
             instance = test_features[index]
             binary_predictions = self.knn_predict(instance, k)
             labels = self.labels_from_prediction(binary_predictions)
             predictions.append(labels)
         # TODO Delete
-        # print(Calculations.f1_score())
+        # print(Calculations.f1_score( ,binary_predictions))
         return tuple(predictions)
 
     def labels_from_prediction(self, binary_predictions):
@@ -85,19 +90,5 @@ class Model:
                 labels.append(0)
             return labels
 
-            # k_neighbors_label = k_neighbors_labels[:, index].sort()
-            # longest_repeats = current_repeats = 0
-            # current_value = best_match_value = k_neighbors_label[0]
-            # for value in k_neighbors_labels:
-            #     if value == current_value:
-            #         current_repeats += 1
-            #     else:
-            #         current_repeats = 1
-            #         current_value = value
-            #     if longest_repeats < current_repeats:
-            #         longest_repeats = current_repeats
-            #         best_match_value = current_value
-
-        # return best_match_value
 
 
