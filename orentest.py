@@ -14,8 +14,7 @@ for list in city_country_list:
 
 
 
-
-
-
-
-print(city_labels)
+# TODO check about r0009.sgm
+# TODO Dateline
+# TODO pickle
+# TODO model.model
