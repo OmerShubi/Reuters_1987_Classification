@@ -1,3 +1,4 @@
+@staticmethod
 def create_cities_dict(labels_pool):
     """
 
@@ -19,6 +20,11 @@ def create_cities_dict(labels_pool):
 
     return cities_dict
 
+    citylabel= self.train_features[index]["DATELINE"]
+    dict = create_cities_dict
+    if citylabel in dict.keys():
+        if dict[citylabel] not in predicted_labels:
+            predicted_labels.append(dict[citylabel])
 
 print(create_cities_dict(["china","usa"]))
 # TODO check about r0009.sgm
