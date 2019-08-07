@@ -19,4 +19,5 @@ print(create_cities_dict(["china","usa"]))
 # TODO Dateline
 # TODO pickle
 # TODO model.model
-# TODO fix cosine similarity and earase zeros
+#TODO delete prints
+

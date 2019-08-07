@@ -86,8 +86,8 @@ def parsing_data(directory_path, is_test):
         for name in files:
             try:
                 data = list(filter(lambda x: x['labels'] != [],parsing(os.path.join(root, name), is_test)))
-                if is_test or (data[0]['labels'] != []):
-                    final_data = final_data + data
+
+                final_data = final_data + data
             except UnicodeDecodeError:
                 continue
     return final_data
