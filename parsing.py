@@ -85,11 +85,11 @@ def parsing_data(directory_path, is_test):
         for name in files:
             try:
                 data = parsing(os.path.join(root, name), is_test)
-                if is_test or (data[0]['labels'] != []):
+                if is_test or (None not in data[0]['labels']):
                     final_data = final_data + data
             except UnicodeDecodeError:
                 continue
     return final_data
 
 
-print(parsing_data('reuters_train_data', False)[0])
+print(parsing_data('test', False))
