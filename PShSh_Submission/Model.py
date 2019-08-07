@@ -1,9 +1,11 @@
 import pickle
 import numpy as np
-import File_reader
-import parsing
+import PShSh_Submission.File_reader as File_reader
+import PShSh_Submission.parsing as parsing
 NEIGHBORS = 5
 import os
+
+
 class Model:
     def __init__(self, path_train_dir):
 
@@ -12,16 +14,16 @@ class Model:
         raw_data = parsing.parsing_data(path, False)
 
         # parse train data COMPLETE
-        # self.data = File_reader.File_reader(raw_data)
-        self.data = pickle.load(open("data.zip", 'rb'))
+        self.data = File_reader.File_reader(raw_data)
+        # self.data = pickle.load(open("data.zip", 'rb'))
 
-        # self.inv_labels = self.data.inv_labels
-        self.inv_labels = pickle.load(open("inv_labels.zip", 'rb'))
+        self.inv_labels = self.data.inv_labels
+        # self.inv_labels = pickle.load(open("inv_labels.zip", 'rb'))
 
         # Creating train_features and train_labels...
-        # self.train_features, self.train_labels = self.data.build_set_tfidf()
-        self.train_features = self.data.build_set_tfidf()
-        self.train_labels = pickle.load(open("train_labels.zip", 'rb'))
+        self.train_features, self.train_labels = self.data.build_set_tfidf()
+        # self.train_features = self.data.build_set_tfidf()
+        # self.train_labels = pickle.load(open("train_labels.p", 'rb'))
 
         # Creating train_features and train_labels COMPLETE
         # print(Number of train articles:", self.train_features.shape[0])
