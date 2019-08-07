@@ -67,6 +67,7 @@ class File_reader:
                 if label not in self.labels.keys():  # if the label doesnt already exists in the labels dictionary
                     self.labels[label] = index2  # add it
                     index2 += 1
+        # print(self.labels)
 
     def build_set_tfidf(self):
         """

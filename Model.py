@@ -16,6 +16,8 @@ class Model:
         self.inv_labels = self.data.inv_labels
         print("Creating train_features and train_labels...")
         self.train_features, self.train_labels = self.data.build_set_tfidf()
+        print(self.train_features.shape[0])
+
         print("Creating train_features and train_labels COMPLETE")
         # TODO remove before submission
         # try:
@@ -81,14 +83,14 @@ class Model:
     def best_neighbor_match_check(k_neighbors_labels,k):
         """	Returns the values with the most repetitions in `k_neighbors`. """
         length = k_neighbors_labels.shape[1]-1
-        labels =[]
+        labels = []
         for index in range(length):
             k_neighbors_label = k_neighbors_labels[:, index]
             if (k_neighbors_label.sum()/k)>0.5:
                 labels.append(1)
             else:
                 labels.append(0)
-            return labels
+        return labels
 
 
 
