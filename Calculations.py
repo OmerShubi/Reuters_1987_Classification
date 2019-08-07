@@ -10,10 +10,8 @@ def cosine_distance(list1, list2):
     :param list2: list
     :return: cosine similarity
     """
-    base = (np.linalg.norm(list1) * np.linalg.norm(list2))
-    if base == 0:
-        base = 0.001
-    return 1-(np.dot(list1, list2) / base)
+
+    return 1-(np.dot(list1, list2) / (np.linalg.norm(list1) * np.linalg.norm(list2)))
 
 
 def f1_score_label(expected, predicted):

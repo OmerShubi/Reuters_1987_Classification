@@ -1,7 +1,6 @@
 import pickle
-import sklearn
 import numpy as np
-from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn import metrics, preprocessing
 
 import Calculations
 import File_reader
@@ -69,7 +68,7 @@ class Model:
 
         length = np.ma.size(self.train_features, 0)-1
         for i in range(length):
-            dist = Calculations.cosine_distance(self.train_features[i, :], test_instance)
+            dist = Calculations.cosine_distance(self.train_features[i], test_instance)
             distances.append(dist)
         max_dist = max(distances)
         distances = np.array(distances, dtype=float)
@@ -117,12 +116,12 @@ class Model:
             label = self.labels_from_prediction(row)
             expected.append(label)
 
-        mlb = MultiLabelBinarizer()
+        mlb = preprocessing.MultiLabelBinarizer()
         r = mlb.fit_transform(expected)
         p = mlb.transform(predictions)
         score = 0
         try:
-            score = sklearn.metrics.f1_score(y_true=r, y_pred=p, average='macro')
+            score = metrics.f1_score(y_true=r, y_pred=p, average='macro')
         except ValueError as ex:
             print("result value is invalid: " + str(ex))
         return score
