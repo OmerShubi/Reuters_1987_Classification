@@ -86,7 +86,7 @@ def parsing_data(directory_path, is_test):
     for root, dirs, files in os.walk(directory_path, topdown=False):
         for name in files:
             try:
-                data = list(filter(lambda x: x['labels'] != [] and len(x['text']) < 10 ,parsing(os.path.join(root, name), is_test)))
+                data = list(filter(lambda x: x['labels'] != [] and x['text'] != '' ,parsing(os.path.join(root, name), is_test)))
                 print("number of articles in file ",name, len(data))
                 final_data = final_data + data
             except UnicodeDecodeError:
