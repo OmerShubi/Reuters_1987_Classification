@@ -31,9 +31,9 @@ class File_reader:
 		:param word: string
 		:return: updated word - string
 		"""
-        strip_specail_chars = re.compile("[^A-Za-z ]+")
+        strip_special_chars = re.compile("[^A-Za-z ]+")
         word = word.lower().replace("<br />", " ")
-        word = re.sub(strip_specail_chars, "", word.lower())
+        word = re.sub(strip_special_chars, "", word.lower())
         # returns empty string if word is a stop word
         if word in self.stop_words:
             return ""
