@@ -16,16 +16,22 @@ class Model:
         self.inv_labels = self.data.inv_labels
         print("Creating train_features and train_labels...")
         self.train_features, self.train_labels = self.data.build_set_tfidf()
-        print(self.train_features.shape[0])
-
         print("Creating train_features and train_labels COMPLETE")
+        print("Number of train articles:", self.train_features.shape[0])
         # TODO remove before submission
         try:
+            pickle.dump(self.data, open("data.p", 'wb'), protocol=4)
+            pickle.dump(self.inv_labels, open("inv_labels.p", 'wb'), protocol=4)
             pickle.dump(self.train_features, open("train_features.p", 'wb'), protocol=4)
             pickle.dump(self.train_labels, open("train_labels.p", 'wb'), protocol=4)
         except:
             pass
 
+        # print("Restoring train features and labels from pickle..")
+        # self.train_features = pickle.load(open("train_features.p", 'rb'))
+        # self.train_labels = pickle.load(open("train_labels.p", 'rb'))
+        # self.train_labels = pickle.load(open("train_labels.p", 'rb'))
+        # self.train_labels = pickle.load(open("train_labels.p", 'rb'))
         ### Till here
 
     def predict(self, path_to_test_set):
