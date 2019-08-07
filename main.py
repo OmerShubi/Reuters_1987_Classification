@@ -1,7 +1,7 @@
-import PShSh_Submission.model
+import model
 
 def main():
-    model1 = PShSh_Submission.model.Model("train_data")
+    model1 = model.Model('.')
     predictions = model1.predict("reuters_test_data")
     print(predictions)
 
