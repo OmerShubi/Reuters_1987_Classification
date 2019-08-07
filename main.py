@@ -6,7 +6,7 @@ def main():
     # predictions = model.predict("reuters_test_data")
     # print(predictions)
     model = Model.Model("train")
-    predictions = model.predict("test")
+    predictions = model.predict_f1("test_not_oren")
     print(predictions)
 
     # with open('train_labels', 'rb') as f:

@@ -19,7 +19,7 @@ def create_labels(article):
 
     for label_type in labels_type:
         if article[label_type] is not None:
-            if article[label_type]['D'] is not None:
+            if article[label_type]['D'] != "" and article[label_type]['D'] is not None:
                 labels.append(article[label_type]['D'])
 
     # Flatting the label list in case labels is list of lists
@@ -81,13 +81,11 @@ def parsing_data(directory_path, is_test):
     :return: Returns list of dictionaries with TEXT and LABELS keys for each article
     """
     final_data = []
-    print("Parsing",directory_path)
 
     for root, dirs, files in os.walk(directory_path, topdown=False):
         for name in files:
             try:
-                print("Parsing file ",name)
-                data = parsing(os.path.join(root, name), is_test)
+                data = list(filter(lambda x: x['labels'] != [],parsing(os.path.join(root, name), is_test)))
                 if is_test or (data[0]['labels'] != []):
                     final_data = final_data + data
             except UnicodeDecodeError:
@@ -96,3 +94,7 @@ def parsing_data(directory_path, is_test):
 
 
 # print(parsing_data('test', False)[0])
+
+for elem in parsing_data('test', False):
+    print(elem)
+

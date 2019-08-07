@@ -1,6 +1,7 @@
 import pickle
-
+import sklearn
 import numpy as np
+from sklearn.preprocessing import MultiLabelBinarizer
 
 import Calculations
 import File_reader
@@ -20,11 +21,11 @@ class Model:
 
         print("Creating train_features and train_labels COMPLETE")
         # TODO remove before submission
-        # try:
-        #     pickle.dump(self.train_features, open("train_features", 'w'), protocol=4)
-        #     pickle.dump(self.train_labels, open("train_labels", 'w'), protocol=4)
-        # except:
-        #     pass
+        try:
+            pickle.dump(self.train_features, open("train_features.p", 'wb'), protocol=4)
+            pickle.dump(self.train_labels, open("train_labels.p", 'wb'), protocol=4)
+        except:
+            pass
 
         ### Till here
 
@@ -94,3 +95,34 @@ class Model:
 
 
 
+    def predict_f1(self, path_to_test_set):
+        predictions = []
+        k = 5
+        print("Parsing test data...")
+        raw_test = parsing.parsing_data(path_to_test_set, False)
+        print("parse test data COMPLETE")
+        print("Creating test_features...")
+        test_features, test_labels = self.data.parse_test(raw_test, True)
+        print("Creating test_features COMPLETE")
+        print("Running KNN...")
+        for index in range(test_features.shape[0]):
+            instance = test_features[index]
+            binary_predictions = self.knn_predict(instance, k)
+            labels = self.labels_from_prediction(binary_predictions)
+            predictions.append(labels)
+        # TODO Delete
+
+        expected = []
+        for row in test_labels:
+            label = self.labels_from_prediction(row)
+            expected.append(label)
+
+        mlb = MultiLabelBinarizer()
+        r = mlb.fit_transform(expected)
+        p = mlb.transform(predictions)
+        score = 0
+        try:
+            score = sklearn.metrics.f1_score(y_true=r, y_pred=p, average='macro')
+        except ValueError as ex:
+            print("result value is invalid: " + str(ex))
+        return score
