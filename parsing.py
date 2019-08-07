@@ -19,7 +19,8 @@ def create_labels(article):
 
     for label_type in labels_type:
         if article[label_type] is not None:
-            labels.append(article[label_type]['D'])
+            if article[label_type]['D'] is not None:
+                labels.append(article[label_type]['D'])
 
     # Flatting the label list in case labels is list of lists
     flat_labels = []
@@ -85,11 +86,11 @@ def parsing_data(directory_path, is_test):
         for name in files:
             try:
                 data = parsing(os.path.join(root, name), is_test)
-                if is_test or (None not in data[0]['labels']):
+                if is_test or (data[0]['labels'] != []):
                     final_data = final_data + data
             except UnicodeDecodeError:
                 continue
     return final_data
 
 
-print(parsing_data('test', False))
+# print(parsing_data('test', False)[0])
