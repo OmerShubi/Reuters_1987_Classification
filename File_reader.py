@@ -1,4 +1,3 @@
-# import pickle
 import re
 import math
 import numpy as np
@@ -64,21 +63,21 @@ class File_reader:
                     self.words[word] = index  # add it
                     index += 1
             # create pull labels
-            if not self.istest:
-                for label in article["labels"]:
-                    if label not in self.labels.keys():  # if the label doesnt already exists in the labels dictionary
-                        self.labels[label] = index2  # add it
-                        index2 += 1
+            for label in article["labels"]:
+                if label not in self.labels.keys():  # if the label doesnt already exists in the labels dictionary
+                    self.labels[label] = index2  # add it
+                    index2 += 1
+        # print(self.labels)
 
     def build_set_tfidf(self):
         """
-		Builds the data vector using tfidf format
+        Builds the data vector using tfidf format
 		:return: the file in vector form, using tfidf format
-		"""
+        """
         doc_set = []
         labels_set = []
         for article in self.data_articles:
-            vec = len(self.words) * [0]
+            vec = len(self.words) * [0.0]
             for word in article["text"].split():
                 word = self.pre_process(word)
                 if word == "":
@@ -90,22 +89,34 @@ class File_reader:
                     continue
                 else:
                     vec[self.words[word]] = vec[self.words[word]] * math.log(
-                        (self.number_of_docs / self.df[word]), 10
-                    )
+                        (self.number_of_docs / self.df[word]), 10)
             doc_set.append(vec)
-            if not self.istest:
-                vec_labels = len(self.labels) * [0]
-                for label in article["labels"]:
-                    vec_labels[self.labels[label]] = 1
-                labels_set.append(vec_labels)
-        if self.istest:
-            return np.ndarray(doc_set)
-        return np.ndarray(doc_set), np.ndarray(labels_set)
+            vec_labels = len(self.labels) * [0]
+            for label in article["labels"]:
+                vec_labels[self.labels[label]] = 1
+            labels_set.append(vec_labels)
+        return np.array(doc_set), np.array(labels_set)
 
-    """def unpickle(file):
-		with open(file, 'rb') as f:
-			data = pickle.load(f, encoding='bytes')
-		return data"""
-
-# data =[{"text":"telaviv is great 23 shalom ma kore //?", 'labels': ["us"]},
-# 					{"text":"2tel aviv ya habibi tel-aviv?", 'labels': ["us", 'canada']}]
+    def parse_test(self, test_articles):
+        """
+        Builds the data vector using tfidf format
+        :param file_to_vector: the file to be processed
+        :return: the file in vector form, using tfidf format
+        """
+        doc_set = []
+        for article in test_articles:
+            vec = len(self.words) * [0, ]
+            for word in article['text'].split():
+                word = self.pre_process(word)
+                if word == '':
+                    continue
+                if word in self.words:
+                    vec[self.words[word]] += 1
+            # After iterating over all words we now have the tf and can store words in tfidf format
+            for word in self.words.keys():
+                if vec[self.words[word]] == 0:
+                    continue
+                else:
+                    vec[self.words[word]] = vec[self.words[word]] * math.log((self.number_of_docs / self.df[word]), 10)
+            doc_set.append(vec)
+        return np.array(doc_set)

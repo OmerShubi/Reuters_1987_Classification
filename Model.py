@@ -3,38 +3,48 @@ import pickle
 import numpy as np
 
 import Calculations
-import KNN
-import parsing
 import File_reader
+import parsing
 
 
 class Model:
     def __init__(self, path_to_precooked_data):
-        raw_data = parsing.parsing_data(path_to_precooked_data)
-        print("finished parsing")
-        data = File_reader.File_reader(raw_data)
-        self.inv_labels = data.inv_labels
-        self.train_features, self.train_labels = data.build_set_tfidf()
-        # TODO remove bfore submission
-        with open("train_features", "ab") as filename:
-            pickle.dump(self.train_features, filename)
-        with open("train_labels", "ab") as filename:
-            pickle.dump(self.train_labels, filename)
+        print("Parsing train data...")
+        raw_data = parsing.parsing_data(path_to_precooked_data, False)
+        print("parse train data COMPLETE")
+        self.data = File_reader.File_reader(raw_data)
+        self.inv_labels = self.data.inv_labels
+        print("Creating train_features and train_labels...")
+        self.train_features, self.train_labels = self.data.build_set_tfidf()
+        print(self.train_features.shape[0])
+
+        print("Creating train_features and train_labels COMPLETE")
+        # TODO remove before submission
+        # try:
+        #     pickle.dump(self.train_features, open("train_features", 'w'), protocol=4)
+        #     pickle.dump(self.train_labels, open("train_labels", 'w'), protocol=4)
+        # except:
+        #     pass
+
         ### Till here
 
     def predict(self, path_to_test_set):
         predictions = []
-        k = 5
-        raw_test = parsing.parsing_data(path_to_test_set)
-        data_test = File_reader.File_reader(raw_test, istest=True)
-        test_features = data_test.build_set_tfidf()
+        k = 1
+        print("Parsing test data...")
+        raw_test = parsing.parsing_data(path_to_test_set, True)
+        print("parse test data COMPLETE")
+        print("Creating test_features...")
+        test_features = self.data.parse_test(raw_test)
+        print("Creating test_features COMPLETE")
+        print("Running KNN...")
         for index in range(test_features.shape[0]):
             instance = test_features[index]
-            binary_predictions = self.KNN_predict(instance, k)
+            binary_predictions = self.knn_predict(instance, k)
             labels = self.labels_from_prediction(binary_predictions)
             predictions.append(labels)
         # TODO Delete
-        #  print(Calculations.f1_score())
+        # print(Calculations.f1_score( ,binary_predictions))
         return tuple(predictions)
 
     def labels_from_prediction(self, binary_predictions):
@@ -44,10 +54,11 @@ class Model:
             predicted_labels.append(self.inv_labels[index])
         return tuple(predicted_labels)
 
-    def KNN_predict(self):
-        pass
+    def knn_predict(self, instance, k):
+        closest_neighbors_labels = self.k_nearest_neighbors(instance, k)
+        return self.best_neighbor_match_check(closest_neighbors_labels,k)
 
-    def k_nearest_neighbors(training_set, test_instance, training_labels, k):
+    def k_nearest_neighbors(self, test_instance, k):
         """
         kNN algorithm. Returns proposed label of a given test image 'test_instance', by finding the
         'k' similar neighbors (euclidean distance) for 'training_set' set of images.
@@ -55,32 +66,31 @@ class Model:
         closest_neighbors_labels = []
         distances = []
 
-        for x in range(np.ma.size(training_set, 1)):
-            dist = euclidean_distance(training_set[:, x].tolist(), test_instance)
+        length = np.ma.size(self.train_features, 0)-1
+        for i in range(length):
+            dist = Calculations.cosine_distance(self.train_features[i, :], test_instance)
             distances.append(dist)
-
+        max_dist = max(distances)
         distances = np.array(distances, dtype=float)
-
         for neighbor in range(k):
             closest_neighbor = np.argmin(distances)
-            closest_neighbors_labels.append(training_labels[closest_neighbor])
-            distances[closest_neighbor] = distances.max()
+            closest_neighbors_labels.append(self.train_labels[closest_neighbor, :])
+            distances[closest_neighbor] = max_dist
 
-        return closest_neighbors_labels
+        return np.array(closest_neighbors_labels)
 
-    def best_neighbor_match_check(k_neighbors_labels):
+    @staticmethod
+    def best_neighbor_match_check(k_neighbors_labels,k):
         """	Returns the values with the most repetitions in `k_neighbors`. """
-        k_neighbors_labels.sort()
-        longest_repeats = current_repeats = 0
-        current_value = best_match_value = k_neighbors_labels[0]
-        for value in k_neighbors_labels:
-            if value == current_value:
-                current_repeats += 1
+        length = k_neighbors_labels.shape[1]-1
+        labels = []
+        for index in range(length):
+            k_neighbors_label = k_neighbors_labels[:, index]
+            if (k_neighbors_label.sum()/k)>0.5:
+                labels.append(1)
             else:
-                current_repeats = 1
-                current_value = value
-            if longest_repeats < current_repeats:
-                longest_repeats = current_repeats
-                best_match_value = current_value
+                labels.append(0)
+        return labels
 
-        return best_match_value
+
+

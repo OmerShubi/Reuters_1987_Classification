@@ -1,6 +1,7 @@
 import numpy as np
 
-def cosine_similarity(list1, list2):
+
+def cosine_distance(list1, list2):
     """
     Calculates cosine similarity between two lists
 
@@ -9,21 +10,10 @@ def cosine_similarity(list1, list2):
     :param list2: list
     :return: cosine similarity
     """
-    return 1-(np.dot(list1, list2) / (np.linalg.norm(list1) * np.linalg.norm(list2)))
-
-
-def distances(test, train):
-    """
-    Calculates distances between test and train
-
-    :param test:
-    :param train:
-    :return: distances list
-    """
-    distances = []
-    for i in range(len(test)):
-        distances.append(cosine_similarity(test[i], train))
-    return distances
+    base = (np.linalg.norm(list1) * np.linalg.norm(list2))
+    if base == 0:
+        base = 0.001
+    return 1-(np.dot(list1, list2) / base)
 
 
 def f1_score_label(expected, predicted):
