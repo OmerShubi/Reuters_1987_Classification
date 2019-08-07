@@ -20,6 +20,7 @@ def create_cities_dict(labels_pool):
 
     return cities_dict
 
+
     citylabel= self.train_features[index]["DATELINE"]
     dict = create_cities_dict
     if citylabel in dict.keys():
