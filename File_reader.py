@@ -11,7 +11,7 @@ class File_reader:
         self.df = {}
         self.words = {}
         self.stop_words = []
-        # self.labels = {}
+        self.labels = {}
         self.labels = {}
         self.create_stop_words_list()
         self.create_words_bank()
@@ -96,8 +96,8 @@ class File_reader:
             for label in article["labels"]:
                 vec_labels[self.labels[label]] = 1
             labels_set.append(vec_labels)
-        # return np.array(doc_set), np.array(labels_set)
-        return np.array(doc_set), pickle.load(open("train_labels.p", 'rb'))
+        return np.array(doc_set), np.array(labels_set)
+        # return np.array(doc_set), pickle.load(open("train_labels.p", 'rb'))
 
 
     def parse_test(self, test_articles, debug=False):

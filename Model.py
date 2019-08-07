@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
-import PShSh_Submission.File_reader as File_reader
-import PShSh_Submission.parsing as parsing
+import File_reader as File_reader
+import parsing as parsing
 NEIGHBORS = 5
 import os
 
@@ -9,9 +9,13 @@ import os
 class Model:
     def __init__(self, path_train_dir):
 
-        path = os.path.join(path_train_dir,"train_data")
+        # TODO UNCOMMENT FOR SUBMISSION
         # Parsing train data...
-        raw_data = parsing.parsing_data(path, False)
+        # path = os.path.join(path_train_dir,"train_data")
+        # raw_data = parsing.parsing_data(path, False)
+
+        # TODO COMMENT THIS FOR SUBMISSION
+        raw_data = parsing.parsing_data("train_data", False)
 
         # parse train data COMPLETE
         self.data = File_reader.File_reader(raw_data)
@@ -31,7 +35,7 @@ class Model:
         # TODO unzip pickles, comment above and uncomment below
         # Restoring train features and labels from pickle..
         # self.train_features = pickle.load(open("train_features.p", 'rb'))
-        # self.train_labels = pickle.load(open("train_labels.p", 'rb'))
+        self.train_labels = pickle.load(open("train_labels.p", 'rb'))
 
     def predict(self, path_to_test_set):
         """
@@ -130,4 +134,7 @@ class Model:
         :param list2: list
         :return: cosine similarity
         """
-        return 1-(np.dot(list1, list2) / (np.linalg.norm(list1) * np.linalg.norm(list2)))
+        base = (np.linalg.norm(list1) * np.linalg.norm(list2))
+        if base != 0:
+            return 1 - (np.dot(list1, list2) / base)
+        return 1

@@ -1,6 +1,5 @@
 """---Parsing Tool---
 This script allows the user to parse a Reuters XML file.
-
 This script requires that 'xmljson' be installed within the Python
 environment you are running this script in.
 """
@@ -44,14 +43,15 @@ def get_dateline(article):
         return ""
 
 
-def get_text(article):
+def get_text(article, is_test):
     """
     :param article:(ordered dictionary).
     :return:Returns the text of the received article.
     """
     text_to_return = ""
-    if 'TITLE' in article['TEXT']:
-        text_to_return = text_to_return + " " + article['TEXT']['TITLE']
+    if not is_test:
+        if 'TITLE' in article['TEXT']:
+            text_to_return = text_to_return + " " + article['TEXT']['TITLE']
     if 'BODY' in article['TEXT']:
         text_to_return = text_to_return + " " + article['TEXT']['BODY']
     return text_to_return
@@ -68,9 +68,9 @@ def parsing(file_path, test):
         raw_data = raw_data.replace('&', "").replace('#', "")
         data_dict = pr.data(fromstring(raw_data), preserve_root=True)
         if test:
-            data = [{"labels": "", "text": get_text(article), "dateline": get_dateline(article)} for article in data_dict['xml']['REUTERS']]
+            data = [{"labels": "", "text": get_text(article, test), "dateline": get_dateline(article)} for article in data_dict['xml']['REUTERS']]
         else:
-            data = [{"labels": create_labels(article), "text": get_text(article), "dateline": get_dateline(article)} for article in data_dict['xml']['REUTERS']]
+            data = [{"labels": create_labels(article), "text": get_text(article, test), "dateline": get_dateline(article)} for article in data_dict['xml']['REUTERS']]
         return data
 
 
@@ -92,3 +92,8 @@ def parsing_data(directory_path, is_test):
                 continue
     return final_data
 
+
+# print(parsing_data('test', False)[0])
+# print(parsing_data('test', False)[223])
+# for elem in parsing_data('test', False):
+#     print(elem)
