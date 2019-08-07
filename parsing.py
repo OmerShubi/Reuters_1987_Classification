@@ -44,14 +44,15 @@ def get_dateline(article):
         return ""
 
 
-def get_text(article):
+def get_text(article, is_test):
     """
     :param article:(ordered dictionary).
     :return:Returns the text of the received article.
     """
     text_to_return = ""
-    if 'TITLE' in article['TEXT']:
-        text_to_return = text_to_return + " " + article['TEXT']['TITLE']
+    if not is_test:
+        if 'TITLE' in article['TEXT']:
+            text_to_return = text_to_return + " " + article['TEXT']['TITLE']
     if 'BODY' in article['TEXT']:
         text_to_return = text_to_return + " " + article['TEXT']['BODY']
     return text_to_return
@@ -68,9 +69,9 @@ def parsing(file_path, test):
         raw_data = raw_data.replace('&', "").replace('#', "")
         data_dict = pr.data(fromstring(raw_data), preserve_root=True)
         if test:
-            data = [{"labels": "", "text": get_text(article), "dateline": get_dateline(article)} for article in data_dict['xml']['REUTERS']]
+            data = [{"labels": "", "text": get_text(article, test), "dateline": get_dateline(article)} for article in data_dict['xml']['REUTERS']]
         else:
-            data = [{"labels": create_labels(article), "text": get_text(article), "dateline": get_dateline(article)} for article in data_dict['xml']['REUTERS']]
+            data = [{"labels": create_labels(article), "text": get_text(article, test), "dateline": get_dateline(article)} for article in data_dict['xml']['REUTERS']]
         return data
 
 
@@ -85,7 +86,7 @@ def parsing_data(directory_path, is_test):
     for root, dirs, files in os.walk(directory_path, topdown=False):
         for name in files:
             try:
-                data = list(filter(lambda x: x['labels'] != [] and x['text'] != '',parsing(os.path.join(root, name), is_test)))
+                data = list(filter(lambda x: x['labels'] != [] and len(x['text']) > 10,parsing(os.path.join(root, name), is_test)))
 
                 final_data = final_data + data
             except UnicodeDecodeError:
