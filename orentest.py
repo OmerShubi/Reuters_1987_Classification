@@ -13,8 +13,8 @@ for list in city_country_list:
         current_labels.append((list[1]))
 
 
-
 # TODO check about r0009.sgm
 # TODO Dateline
 # TODO pickle
 # TODO model.model
+# TODO fix cosine similarity and earase zeros

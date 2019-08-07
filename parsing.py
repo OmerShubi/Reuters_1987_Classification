@@ -19,7 +19,8 @@ def create_labels(article):
 
     for label_type in labels_type:
         if article[label_type] is not None:
-            labels.append(article[label_type]['D'])
+            if article[label_type]['D'] is not None:
+                labels.append(article[label_type]['D'])
 
     # Flatting the label list in case labels is list of lists
     flat_labels = []
@@ -92,4 +93,4 @@ def parsing_data(directory_path, is_test):
     return final_data
 
 
-print(parsing_data('reuters_train_data', False)[0])
+# print(parsing_data('test', False)[0])
