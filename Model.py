@@ -2,20 +2,20 @@ import pickle
 import numpy as np
 import File_reader as File_reader
 import parsing as parsing
-NEIGHBORS = 5
+NEIGHBORS = 3
 import os
 
 
 class Model:
     def __init__(self, path_train_dir):
 
-        # TODO UNCOMMENT FOR SUBMISSION
         # Parsing train data...
-        # path = os.path.join(path_train_dir,"train_data")
-        # raw_data = parsing.parsing_data(path, False)
+        # TODO UNCOMMENT FOR SUBMISSION
+        path = os.path.join(path_train_dir,"train_data")
+        raw_data = parsing.parsing_data(path, False)
 
         # TODO COMMENT THIS FOR SUBMISSION
-        raw_data = parsing.parsing_data("train_data", False)
+        # raw_data = parsing.parsing_data("train_data", False)
 
         # parse train data COMPLETE
         self.data = File_reader.File_reader(raw_data)
