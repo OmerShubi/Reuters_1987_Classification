@@ -28,7 +28,7 @@ class Model:
 
     def predict(self, path_to_test_set):
         predictions = []
-        k = 5
+        k = 3
         raw_test = parsing.parsing_data(path_to_test_set, True)
         test_features = self.data.parse_test(raw_test)
         for index in range(test_features.shape[0]):
@@ -49,7 +49,7 @@ class Model:
 
     def knn_predict(self, instance, k):
         closest_neighbors_labels = self.k_nearest_neighbors(instance, k)
-        return self.best_neighbor_match_check(closest_neighbors_labels)
+        return self.best_neighbor_match_check(closest_neighbors_labels,k)
 
     def k_nearest_neighbors(self, test_instance, k):
         """
@@ -73,25 +73,31 @@ class Model:
         return np.array(closest_neighbors_labels)
 
     @staticmethod
-    def best_neighbor_match_check(k_neighbors_labels):
+    def best_neighbor_match_check(k_neighbors_labels,k):
         """	Returns the values with the most repetitions in `k_neighbors`. """
-        length = k_neighbors_labels.shape[0]-1
+        length = k_neighbors_labels.shape[1]-1
+        labels =[]
         for index in range(length):
-            k_neighbors_label = k_neighbors_labels[index, :].sort()
-            print(k_neighbors_labels[index, :])
-            print(type(k_neighbors_label))
-            longest_repeats = current_repeats = 0
-            current_value = best_match_value = k_neighbors_label[0]
-            for value in k_neighbors_labels:
-                if value == current_value:
-                    current_repeats += 1
-                else:
-                    current_repeats = 1
-                    current_value = value
-                if longest_repeats < current_repeats:
-                    longest_repeats = current_repeats
-                    best_match_value = current_value
+            k_neighbors_label = k_neighbors_labels[:, index]
+            if (k_neighbors_label.sum()/k)>0.5:
+                labels.append(1)
+            else:
+                labels.append(0)
+            return labels
 
-        return best_match_value
+            # k_neighbors_label = k_neighbors_labels[:, index].sort()
+            # longest_repeats = current_repeats = 0
+            # current_value = best_match_value = k_neighbors_label[0]
+            # for value in k_neighbors_labels:
+            #     if value == current_value:
+            #         current_repeats += 1
+            #     else:
+            #         current_repeats = 1
+            #         current_value = value
+            #     if longest_repeats < current_repeats:
+            #         longest_repeats = current_repeats
+            #         best_match_value = current_value
+
+        # return best_match_value
 
 
