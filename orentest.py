@@ -14,7 +14,7 @@ def create_cities_dict(labels_pool):
     cities_dict = {elem[0]:elem[1] for elem in current_labels}
 
     return cities_dict
-print(create_cities_dict(["china"]))
+print(create_cities_dict(["china","usa"]))
 # TODO check about r0009.sgm
 # TODO Dateline
 # TODO pickle
