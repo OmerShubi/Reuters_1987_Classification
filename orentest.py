@@ -33,4 +33,3 @@ print(create_cities_dict(["china","usa"]))
 # TODO pickle
 # TODO model.model
 #TODO delete prints
-

@@ -1,6 +1,5 @@
 """---Parsing Tool---
 This script allows the user to parse a Reuters XML file.
-
 This script requires that 'xmljson' be installed within the Python
 environment you are running this script in.
 """
@@ -87,7 +86,9 @@ def parsing_data(directory_path, is_test):
         for name in files:
             try:
                 data = list(filter(lambda x: x['labels'] != [] and x['text'] != '' ,parsing(os.path.join(root, name), is_test)))
+
                 print("number of articles in file ",name, len(data))
+
                 final_data = final_data + data
             except UnicodeDecodeError:
                 continue
@@ -98,6 +99,7 @@ def parsing_data(directory_path, is_test):
 
 # print(parsing_data('test', False)[0])
 # print(parsing_data('test', False)[223])
-for elem in parsing_data('test', False):
-    print(elem)
+
+# for elem in parsing_data('test', False):
+#     print(elem)
 
