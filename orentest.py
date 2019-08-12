@@ -1,6 +1,7 @@
 @staticmethod
 def create_cities_dict(labels_pool):
     """
+
     :param labels_pool:
     :return: cities to country dictionary
     """

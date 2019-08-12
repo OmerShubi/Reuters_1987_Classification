@@ -87,13 +87,19 @@ def parsing_data(directory_path, is_test):
             try:
                 data = list(filter(lambda x: x['labels'] != [] and x['text'] != '' ,parsing(os.path.join(root, name), is_test)))
 
+                print("number of articles in file ",name, len(data))
+
                 final_data = final_data + data
             except UnicodeDecodeError:
                 continue
+    print("all articles:",len(final_data))
+
     return final_data
 
 
 # print(parsing_data('test', False)[0])
 # print(parsing_data('test', False)[223])
+
 # for elem in parsing_data('test', False):
 #     print(elem)
+
