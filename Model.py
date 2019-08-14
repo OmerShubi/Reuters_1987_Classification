@@ -11,11 +11,11 @@ class Model:
 
         # Parsing train data...
         # TODO UNCOMMENT FOR SUBMISSION
-        path = os.path.join(path_train_dir,"train_data")
-        raw_data = parsing.parsing_data(path, False)
+        # path = os.path.join(path_train_dir,"reuters_train_data")
+        # raw_data = parsing.parsing_data(path, False)
 
         # TODO COMMENT THIS FOR SUBMISSION
-        # raw_data = parsing.parsing_data("train_data", False)
+        raw_data = parsing.parsing_data("train_data", False)
 
         # parse train data COMPLETE
         self.data = File_reader.File_reader(raw_data)
@@ -35,7 +35,7 @@ class Model:
         # TODO unzip pickles, comment above and uncomment below
         # Restoring train features and labels from pickle..
         # self.train_features = pickle.load(open("train_features.p", 'rb'))
-        self.train_labels = pickle.load(open("train_labels.p", 'rb'))
+        # self.train_labels = pickle.load(open("train_labels.p", 'rb'))
 
     def predict(self, path_to_test_set):
         """
@@ -54,11 +54,17 @@ class Model:
 
         # Creating test_features COMPLETE
         # Running KNN...
+        dict = Model.create_cities_dict(list(self.data.labels.keys()))
         for index in range(test_features.shape[0]):
             instance = test_features[index]
             binary_predictions = self.knn_predict(instance, k)
             labels = self.labels_from_prediction(binary_predictions)
-            predictions.append(labels)
+            citylabel = self.data.data_articles[index]["dateline"].replace(" ", "")
+
+            if citylabel in dict.keys():
+                if dict[citylabel] not in labels:
+                    labels.append(dict[citylabel])
+            predictions.append(tuple(labels))
 
         return tuple(predictions)
 
@@ -72,7 +78,28 @@ class Model:
         indexes = np.where(binary_predictions)[0]
         for index in indexes:
             predicted_labels.append(self.inv_labels[index])
-        return tuple(predicted_labels)
+        return predicted_labels
+
+    @staticmethod
+    def create_cities_dict(labels_pool):
+        """
+        :param labels_pool:
+        :return: cities to country dictionary
+        """
+        city_country_list = []
+        with open("world-cities_csv.csv", encoding="iso-8859-1") as f:
+            for line in f:
+                city_country_list.append(list(map(lambda x: x.replace('\n', ""), line.split(','))))
+
+        current_labels = []
+        for city_country in city_country_list:
+            if city_country[1] in labels_pool:
+                clean_list = list(map(lambda x: x.replace('\n', ""), city_country))
+                current_labels.append(clean_list)
+
+        cities_dict = {elem[0]: elem[1] for elem in current_labels}
+
+        return cities_dict
 
     def knn_predict(self, instance, k):
         """

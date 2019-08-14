@@ -12,7 +12,6 @@ class File_reader:
         self.words = {}
         self.stop_words = []
         self.labels = {}
-        self.labels = {}
         self.create_stop_words_list()
         self.create_words_bank()
         self.inv_labels = {v: k for k, v in self.labels.items()}
