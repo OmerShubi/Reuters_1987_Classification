@@ -201,3 +201,4 @@ dmypy.json
 /.idea/SecretProject.iml
 /.idea/vcs.xml
 /.idea/deployment.xml
+/.idea/webResources.xml
