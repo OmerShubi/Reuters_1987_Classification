@@ -1,22 +1,10 @@
 import numpy as np
 import FileReader as File_reader
-import parser
+import dataParser
 import os
 import logging
 
-# Gets or creates a logger
 logger = logging.getLogger(__name__)
-
-# set log level
-logger.setLevel(logging.INFO)
-
-# define file handler and set formatter
-file_handler = logging.FileHandler('logfile.log')
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-file_handler.setFormatter(formatter)
-
-# add the handlers to the logger
-logger.addHandler(file_handler)
 
 KNN_NEIGHBORS = 3
 
@@ -31,13 +19,12 @@ class Model:
             path = path_train_dir
 
         logger.info('Parsing train data...')
-
-        self.parser = parser.Parser()
-        raw_data = self.parser.parse_data(path)
+        data_parser = dataParser.DataParser(path)
+        raw_data = data_parser.parse_data()
 
         logger.info('parse train data COMPLETE')
 
-        # processed data
+        # process data
         self.data = File_reader.FileReader(raw_data)
         # self.data = pickle.load(open("data.zip", 'rb'))
 
@@ -71,7 +58,8 @@ class Model:
 
         logger.info('Parsing test data...')
 
-        raw_test = self.parser.parse_data(path_to_test_set, is_test=True)
+        data_parser = dataParser.DataParser(path_to_test_set)
+        raw_test = data_parser.parse_data(is_test=True)
 
         logger.info('parse test data COMPLETE')
 
@@ -79,7 +67,7 @@ class Model:
 
         test_features = self.data.parse_test(raw_test)
 
-        logger.info('Running KNN...')
+        logger.info('Running KNN with k = %s ...', k)
 
         cities_countries = Model.create_cities_dict(list(self.data.labels.keys()))
         for index in range(test_features.shape[0]):

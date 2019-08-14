@@ -7,11 +7,17 @@ environment you are running this script in.
 from xmljson import parker as pr
 from xml.etree.ElementTree import fromstring
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-class Parser:
-    @staticmethod
-    def parse_data(directory_path, is_test=False):
+class DataParser:
+    def __init__(self, directory_path, is_test_data=False):
+        self.data_path = directory_path
+        self.is_test_data = is_test_data
+
+    def parse_data(self, is_test=False):
         """
         :param is_test: boolean. Gets True if the article is part of the test set.
         :param directory_path:- string type:
@@ -19,15 +25,20 @@ class Parser:
         """
         final_data = []
 
-        for root, dirs, files in os.walk(directory_path, topdown=False):
+        for root, dirs, files in os.walk(self.data_path, topdown=False):
             for name in files:
                 try:
                     data = list(filter(lambda x: x['labels'] != [] and x['text'] != '',
-                                       Parser._parsing(os.path.join(root, name), is_test)))
+                                       DataParser._parsing(os.path.join(root, name), is_test)))
+
+                    logger.debug("number of articles in file {}: {}".format(name, len(data)))
 
                     final_data = final_data + data
                 except UnicodeDecodeError:
                     continue
+
+        logger.info("Total number of articles parsed: %s", len(final_data))
+
         return final_data
 
     @staticmethod
@@ -93,11 +104,11 @@ class Parser:
             data_dict = pr.data(fromstring(raw_data), preserve_root=True)
             if test:
                 data = [
-                    {"labels": "", "text": Parser._get_text(article, test), "dateline": Parser._get_dateline(article)}
-                    for article in data_dict['xml']['REUTERS']]
+                    {"labels": "", "text": DataParser._get_text(article, test), "dateline":
+                        DataParser._get_dateline(article)} for article in data_dict['xml']['REUTERS']]
             else:
-                data = [{"labels": Parser._create_labels(article), "text": Parser._get_text(article, test),
-                         "dateline": Parser._get_dateline(article)} for article in data_dict['xml']['REUTERS']]
+                data = [{"labels": DataParser._create_labels(article), "text": DataParser._get_text(article, test),
+                         "dateline": DataParser._get_dateline(article)} for article in data_dict['xml']['REUTERS']]
             return data
 
     # print(parsing_data('test', False)[0])
