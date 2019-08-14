@@ -4,10 +4,11 @@ This script allows the user to parse a Reuters XML file.
 This script requires that 'xmljson' be installed within the Python
 environment you are running this script in.
 """
-from xmljson import parker as pr
-from xml.etree.ElementTree import fromstring
-import os
 import logging
+import os
+from xml.etree.ElementTree import fromstring
+
+from xmljson import parker as pr
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,6 @@ class DataParser:
     def parse_data(self, is_test=False):
         """
         :param is_test: boolean. Gets True if the article is part of the test set.
-        :param directory_path:- string type:
         :return: Returns list of dictionaries with TEXT and LABELS keys for each article
         """
         final_data = []

@@ -1,12 +1,15 @@
+import logging
+import os
+
 import numpy as np
+
 import FileReader as File_reader
 import dataParser
-import os
-import logging
 
 logger = logging.getLogger(__name__)
 
 KNN_NEIGHBORS = 3
+WORLD_CITIES_PATH = "Data/world-cities.csv"
 
 
 class Model:
@@ -74,7 +77,7 @@ class Model:
             instance = test_features[index]
             binary_predictions = self.knn_predict(instance, k)
             labels = self.labels_from_prediction(binary_predictions)
-            city_label = raw_test[index]["dateline"].replace(" ", "")  # Major fix..
+            city_label = raw_test[index]["dateline"].replace(" ", "")
 
             if city_label in cities_countries.keys():
                 if cities_countries[city_label] not in labels:
@@ -102,7 +105,7 @@ class Model:
         :return: cities to country dictionary
         """
         city_country_list = []
-        with open("world-cities.csv", encoding="iso-8859-1") as f:
+        with open(WORLD_CITIES_PATH, encoding="iso-8859-1") as f:
             for line in f:
                 city_country_list.append(list(map(lambda x: x.replace('\n', ""), line.split(','))))
 

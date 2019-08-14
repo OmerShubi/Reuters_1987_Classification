@@ -1,7 +1,8 @@
-import re
-import math
-import numpy as np
 import logging
+import math
+import re
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ class FileReader:
         self.inv_labels = {v: k for k, v in self.labels.items()}
 
     def create_stop_words_list(self):
-        with open("./stop_words.txt") as stop_words_file:
+        with open("Data/stop_words.txt") as stop_words_file:
             for stop_word in stop_words_file:
                 self.stop_words.append(stop_word.rstrip())
 
