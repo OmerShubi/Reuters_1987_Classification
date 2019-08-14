@@ -1,5 +1,8 @@
 import logging.config
 
+import sklearn
+from sklearn.preprocessing import MultiLabelBinarizer
+
 import model
 
 
@@ -15,7 +18,7 @@ def main():
 
     logger.info("********** NEW RUN **********")
 
-    # *******Change debug to True for small dataset********
+    # *******Change debug to True for small dataset ********
     debug = True
 
     if debug:
@@ -35,6 +38,16 @@ def main():
 
     print(predictions)
 
+    # reference =
+    # mlb = MultiLabelBinarizer()
+    # r = mlb.fit_transform(reference)
+    # p = mlb.transform(predictions)
+    # score = 0
+    # try:
+    #     score = sklearn.metrics.f1_score(y_true=r, y_pred=p, average='macro')
+    # except ValueError as ex:
+    #     logger.error("result value is invalid: " + str(ex))
+    #
 
 if __name__ == "__main__":
     main()

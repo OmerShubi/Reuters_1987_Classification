@@ -21,6 +21,7 @@ class FileReader:
         self.inv_labels = {v: k for k, v in self.labels.items()}
 
     def create_stop_words_list(self):
+        logger.info("Creating stop words list...")
         with open("Data/stop_words.txt") as stop_words_file:
             for stop_word in stop_words_file:
                 self.stop_words.append(stop_word.rstrip())
@@ -46,6 +47,8 @@ class FileReader:
         create_words_bank from all the articles and pull of labels
         :return:
         """
+        logger.info("Creating words bank...")
+
         index = 0
         index2 = 0
         for article in self.data_articles:
@@ -79,6 +82,8 @@ class FileReader:
         Builds the data vector using tfidf format
         :return: the file in vector form, using tfidf format
         """
+        logger.info("Building tfidf set...")
+
         doc_set = []
         labels_set = []
         for article in self.data_articles:
@@ -111,6 +116,7 @@ class FileReader:
         :param debug: if True returns the labels of the articles as well, for referencing prediction
         :return: the file in vector form, using tfidf format
         """
+        logger.info("Parsing (tfidf) test data...")
         doc_set = []
         labels_set = []
 
