@@ -1,24 +1,22 @@
 import numpy as np
-import File_reader as File_reader
-import parsing as parsing
+import FileReader as File_reader
+import parser
 import os
-
-
 import logging
 
+# Gets or creates a logger
 logger = logging.getLogger(__name__)
+
+# set log level
 logger.setLevel(logging.INFO)
 
-# create a file handler
-handler = logging.FileHandler('all_logs.log')
-handler.setLevel(logging.INFO)
-
-# create a logging format
+# define file handler and set formatter
+file_handler = logging.FileHandler('logfile.log')
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
 
 # add the handlers to the logger
-logger.addHandler(handler)
+logger.addHandler(file_handler)
 
 KNN_NEIGHBORS = 3
 
@@ -34,13 +32,13 @@ class Model:
 
         logger.info('Parsing train data...')
 
-        self.parser = parsing.Parser()
+        self.parser = parser.Parser()
         raw_data = self.parser.parse_data(path)
 
         logger.info('parse train data COMPLETE')
 
         # processed data
-        self.data = File_reader.File_reader(raw_data)
+        self.data = File_reader.FileReader(raw_data)
         # self.data = pickle.load(open("data.zip", 'rb'))
 
         self.inv_labels = self.data.inv_labels
@@ -65,7 +63,7 @@ class Model:
         For each article in each file in path_to_test_set (dir) predicts the labels of the article
         :param path_to_test_set: directory with all the test reuters files
         :return: tuple of tuples, each inner tuple stores the labels of an article.
-                    Outer tupple is ordered, inner is not
+                    Outer tuple is ordered, inner is not
         """
         predictions = []
 
@@ -88,11 +86,11 @@ class Model:
             instance = test_features[index]
             binary_predictions = self.knn_predict(instance, k)
             labels = self.labels_from_prediction(binary_predictions)
-            citylabel = self.data.data_articles[index]["dateline"].replace(" ", "")
+            city_label = self.data.data_articles[index]["dateline"].replace(" ", "")
 
-            if citylabel in cities_countries.keys():
-                if cities_countries[citylabel] not in labels:
-                    labels.append(cities_countries[citylabel])
+            if city_label in cities_countries.keys():
+                if cities_countries[city_label] not in labels:
+                    labels.append(cities_countries[city_label])
             predictions.append(tuple(labels))
 
         return tuple(predictions)
