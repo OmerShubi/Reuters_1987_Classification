@@ -74,7 +74,7 @@ class Model:
             instance = test_features[index]
             binary_predictions = self.knn_predict(instance, k)
             labels = self.labels_from_prediction(binary_predictions)
-            city_label = self.data.data_articles[index]["dateline"].replace(" ", "")
+            city_label = raw_test[index]["dateline"].replace(" ", "")  # Major fix..
 
             if city_label in cities_countries.keys():
                 if cities_countries[city_label] not in labels:
