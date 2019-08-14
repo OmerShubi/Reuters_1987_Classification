@@ -1,4 +1,5 @@
-"""---Parsing Tool---
+"""
+---Parsing Tool---
 This script allows the user to parse a Reuters XML file.
 This script requires that 'xmljson' be installed within the Python
 environment you are running this script in.
@@ -43,9 +44,10 @@ def get_dateline(article):
         return ""
 
 
-def get_text(article, is_test):
+def get_text(article, is_test=False):
     """
     :param article:(ordered dictionary).
+    :param is_test: if test data parses without the 'title' attribute
     :return:Returns the text of the received article.
     """
     text_to_return = ""
@@ -74,7 +76,7 @@ def parsing(file_path, test):
         return data
 
 
-def parsing_data(directory_path, is_test):
+def parsing_data(directory_path, is_test=False):
     """
     :param is_test: boolean. Gets True if the article is part of the test set.
     :param directory_path:- string type:

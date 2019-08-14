@@ -1,36 +1,58 @@
-import pickle
 import numpy as np
 import File_reader as File_reader
 import parsing as parsing
-NEIGHBORS = 3
 import os
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# create a file handler
+handler = logging.FileHandler('all_logs.log')
+handler.setLevel(logging.INFO)
+
+# create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# add the handlers to the logger
+logger.addHandler(handler)
+
+KNN_NEIGHBORS = 3
+
+
 class Model:
-    def __init__(self, path_train_dir):
 
-        # Parsing train data...
-        # TODO UNCOMMENT FOR SUBMISSION
-        # path = os.path.join(path_train_dir,"reuters_train_data")
-        # raw_data = parsing.parsing_data(path, False)
+    def __init__(self, path_train_dir, is_submission=False):
 
-        # TODO COMMENT THIS FOR SUBMISSION
-        raw_data = parsing.parsing_data("train_data", False)
+        if is_submission:
+            path = os.path.join('.', "reuters_train_data")
+        else:
+            path = path_train_dir
 
-        # parse train data COMPLETE
+        logger.info('Parsing train data...')
+
+        raw_data = parsing.parsing_data(path)
+
+        logger.info('parse train data COMPLETE')
+
+        # processed data
         self.data = File_reader.File_reader(raw_data)
         # self.data = pickle.load(open("data.zip", 'rb'))
 
         self.inv_labels = self.data.inv_labels
         # self.inv_labels = pickle.load(open("inv_labels.zip", 'rb'))
 
-        # Creating train_features and train_labels...
+        logger.info('Creating train_features and train_labels...')
+
         self.train_features, self.train_labels = self.data.build_set_tfidf()
         # self.train_features = self.data.build_set_tfidf()
         # self.train_labels = pickle.load(open("train_labels.p", 'rb'))
 
-        # Creating train_features and train_labels COMPLETE
-        # print(Number of train articles:", self.train_features.shape[0])
+        logger.info('Creating train_features and train_labels COMPLETE')
+        logger.info('Number of train articles: %s', self.train_features.shape[0])
 
         # TODO unzip pickles, comment above and uncomment below
         # Restoring train features and labels from pickle..
@@ -39,31 +61,37 @@ class Model:
 
     def predict(self, path_to_test_set):
         """
-
-        :param path_to_test_set:
-        :return:
+        For each article in each file in path_to_test_set (dir) predicts the labels of the article
+        :param path_to_test_set: directory with all the test reuters files
+        :return: tuple of tuples, each inner tuple stores the labels of an article.
+                    Outer tupple is ordered, inner is not
         """
         predictions = []
-        k = NEIGHBORS
-        # Parsing test data...
-        raw_test = parsing.parsing_data(path_to_test_set, True)
 
-        # parse test data COMPLETE
-        # Creating test_features...
+        k = KNN_NEIGHBORS
+
+        logger.info('Parsing test data...')
+
+        raw_test = parsing.parsing_data(path_to_test_set, is_test=True)
+
+        logger.info('parse test data COMPLETE')
+
+        logger.info('Creating test_features...')
+
         test_features = self.data.parse_test(raw_test)
 
-        # Creating test_features COMPLETE
-        # Running KNN...
-        dict = Model.create_cities_dict(list(self.data.labels.keys()))
+        logger.info('Running KNN...')
+
+        cities_countries = Model.create_cities_dict(list(self.data.labels.keys()))
         for index in range(test_features.shape[0]):
             instance = test_features[index]
             binary_predictions = self.knn_predict(instance, k)
             labels = self.labels_from_prediction(binary_predictions)
             citylabel = self.data.data_articles[index]["dateline"].replace(" ", "")
 
-            if citylabel in dict.keys():
-                if dict[citylabel] not in labels:
-                    labels.append(dict[citylabel])
+            if citylabel in cities_countries.keys():
+                if cities_countries[citylabel] not in labels:
+                    labels.append(cities_countries[citylabel])
             predictions.append(tuple(labels))
 
         return tuple(predictions)
@@ -87,7 +115,7 @@ class Model:
         :return: cities to country dictionary
         """
         city_country_list = []
-        with open("world-cities_csv.csv", encoding="iso-8859-1") as f:
+        with open("world-cities.csv", encoding="iso-8859-1") as f:
             for line in f:
                 city_country_list.append(list(map(lambda x: x.replace('\n', ""), line.split(','))))
 
@@ -109,7 +137,7 @@ class Model:
         :return:
         """
         closest_neighbors_labels = self.k_nearest_neighbors(instance, k)
-        return Model.best_neighbor_match_check(closest_neighbors_labels,k)
+        return Model.best_neighbor_match_check(closest_neighbors_labels, k)
 
     def k_nearest_neighbors(self, test_instance, k):
         """
@@ -119,7 +147,7 @@ class Model:
         closest_neighbors_labels = []
         distances = []
 
-        length = np.ma.size(self.train_features, 0)-1
+        length = np.ma.size(self.train_features, 0) - 1
         for i in range(length):
             dist = Model.cosine_distance(self.train_features[i], test_instance)
             distances.append(dist)
@@ -141,27 +169,29 @@ class Model:
         :return:
         """
         """	Returns the values with the most repetitions in `k_neighbors`. """
-        length = k_neighbors_labels.shape[1]-1
+        length = k_neighbors_labels.shape[1] - 1
         labels = []
         for index in range(length):
             k_neighbors_label = k_neighbors_labels[:, index]
-            if (k_neighbors_label.sum()/k)>0.5:
+            if (k_neighbors_label.sum() / k) > 0.5:
                 labels.append(1)
             else:
                 labels.append(0)
         return labels
 
     @staticmethod
-    def cosine_distance(list1, list2):
+    def cosine_distance(x, y):
+
         """
         Calculates cosine similarity between two lists
 
         Assumes lists are of same length
-        :param list1: list
-        :param list2: list
+        :param x: list
+        :param y: list
         :return: cosine similarity
         """
-        base = (np.linalg.norm(list1) * np.linalg.norm(list2))
+
+        base = (np.linalg.norm(x) * np.linalg.norm(y))
         if base != 0:
-            return 1 - (np.dot(list1, list2) / base)
+            return 1 - (np.dot(x, y) / base)
         return 1

@@ -1,8 +1,16 @@
 import model
 
+TRAIN_DATA_DIR = "train_data"
+TEST_DATA_DIR = "reuters_test_data"
+
+
 def main():
-    model1 = model.Model('.')
-    predictions = model1.predict("reuters_test_data")
+    """
+
+    :return:
+    """
+    knn_model = model.Model(TRAIN_DATA_DIR)
+    predictions = knn_model.predict(TEST_DATA_DIR)
     print(predictions)
 
 
