@@ -31,6 +31,8 @@ def main():
     logger.info("Predicting testing with data from '%s' directory", test_data_dir)
     predictions = knn_model.predict(test_data_dir)
 
+    logger.info("Prediction complete")
+
     print(predictions)
 
 
