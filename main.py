@@ -1,6 +1,6 @@
 import model
 
-TRAIN_DATA_DIR = "train_data"
+TRAIN_DATA_DIR = "reuters_train_data"
 TEST_DATA_DIR = "reuters_test_data"
 
 

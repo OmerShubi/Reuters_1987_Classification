@@ -34,7 +34,8 @@ class Model:
 
         logger.info('Parsing train data...')
 
-        raw_data = parsing.parsing_data(path)
+        self.parser = parsing.Parser()
+        raw_data = self.parser.parse_data(path)
 
         logger.info('parse train data COMPLETE')
 
@@ -72,7 +73,7 @@ class Model:
 
         logger.info('Parsing test data...')
 
-        raw_test = parsing.parsing_data(path_to_test_set, is_test=True)
+        raw_test = self.parser.parse_data(path_to_test_set, is_test=True)
 
         logger.info('parse test data COMPLETE')
 
