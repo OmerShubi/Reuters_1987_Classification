@@ -56,13 +56,15 @@ class Model:
                     Outer tuple is ordered, inner is not
         """
         predictions = []
+        expected = [] # TODO
 
         k = KNN_NEIGHBORS
 
         logger.info('Parsing test data...')
 
         data_parser = dataParser.DataParser(path_to_test_set)
-        raw_test = data_parser.parse_data(is_test=True)
+        # raw_test = data_parser.parse_data(is_test=True) TODO
+        raw_test = data_parser.parse_data(is_test=False)
 
         logger.info('parse test data COMPLETE')
 
@@ -78,13 +80,16 @@ class Model:
             binary_predictions = self.knn_predict(instance, k)
             labels = self.labels_from_prediction(binary_predictions)
             city_label = raw_test[index]["dateline"].replace(" ", "")
+            reference = raw_test[index]["labels"]
 
             if city_label in cities_countries.keys():
                 if cities_countries[city_label] not in labels:
                     labels.append(cities_countries[city_label])
             predictions.append(tuple(labels))
+            expected.append(tuple(reference)) # TODO
 
-        return tuple(predictions)
+        return tuple(predictions), tuple(expected)
+        # return tuple(predictions) TODO
 
     def labels_from_prediction(self, binary_predictions):
         """
