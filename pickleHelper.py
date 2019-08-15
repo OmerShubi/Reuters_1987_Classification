@@ -13,13 +13,14 @@ def save_to_pickle(file_name, data):
 
 def retrieve_from_pickle(path, file_name='unknown'):
     try:
-        data = pickle.load(path)
-    except Exception:
-        logger.exception(Exception)
+        data = pickle.load(open(path, 'rb'))
+    except FileNotFoundError:
+        logger.exception("File not Found")
         raise FileNotFoundError
     else:
         logger.info("Retrieved {} pickle from {} ".format(file_name, path))
         return data
+
 
 def get_file_name_datetime(prefix, suffix='', file_type='p'):
     return prefix + "-" + str(datetime.now().strftime("%Y-%m-%d-%H%M")) + suffix + "." + file_type

@@ -80,9 +80,9 @@ class Model:
             binary_predictions = self.knn_predict(instance, k)
             labels = self.labels_from_prediction(binary_predictions)
             try:
-                city_label = self.data.data_articles[index]["dateline"].replace(" ", "")
-                # city_label = raw_data[index]["dateline"].replace(" ", "") # THIS IS THE CORRECT ONE
-            except:
+                # city_label = self.data.data_articles[index]["dateline"].replace(" ", "")
+                city_label = raw_test[index]["dateline"].replace(" ", "") # THIS IS THE CORRECT ONE
+            except Exception:
                 pass
             reference = raw_test[index]["labels"]
 

@@ -18,7 +18,7 @@ def main():
     logger.info("********** NEW RUN **********")
 
     # *******Change debug to True for small dataset ********
-    debug = False
+    debug = True
 
     if debug:
         train_data_dir = "Data/train_data"
@@ -37,13 +37,14 @@ def main():
     logger.info("Prediction complete")
 
     pickleHelper.save_to_pickle("predictions", predictions)
-
+    # path_to_predictions = "Pickles/predictions-2019-08-15-1027.p"
     # try:
-    #     returned_predictions = pickleHelper.retrieve_from_pickle(path_to_predictions, predictions)
-    # except:
-    #     predictions = knn_model.predict(test_data_dir)
+    #     returned_predictions = pickleHelper.retrieve_from_pickle(path_to_predictions, "predictions")
+    # except FileNotFoundError:
+    #     returned_predictions = knn_model.predict(test_data_dir)
 
     print(predictions)
+    # print(returned_predictions)
     print(reference)
     mlb = MultiLabelBinarizer()
     r = mlb.fit_transform(reference)
