@@ -1,16 +1,9 @@
-import pickle
 import logging.config
-
 import sklearn.metrics
 from sklearn.preprocessing import MultiLabelBinarizer
-from datetime import datetime
 
 import model
-
-
-def get_file_name_datetime(prefix, suffix='', file_type='p'):
-    return prefix + "-" + str(datetime.now().strftime("%Y-%m-%d-%H%M")) + suffix + "." + file_type
-
+import pickleHelper
 
 def main():
     """
@@ -43,9 +36,12 @@ def main():
 
     logger.info("Prediction complete")
 
-    name = "Pickles/" + get_file_name_datetime("predictions")
-    pickle.dump(predictions, open(name, 'wb'))
-    logger.info("Prediction saved to %s", name)
+    pickleHelper.save_to_pickle("predictions", predictions)
+
+    # try:
+    #     returned_predictions = pickleHelper.retrieve_from_pickle(path_to_predictions, predictions)
+    # except:
+    #     predictions = knn_model.predict(test_data_dir)
 
     print(predictions)
     print(reference)

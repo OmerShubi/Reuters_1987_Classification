@@ -81,6 +81,7 @@ class Model:
             labels = self.labels_from_prediction(binary_predictions)
             try:
                 city_label = self.data.data_articles[index]["dateline"].replace(" ", "")
+                # city_label = raw_data[index]["dateline"].replace(" ", "") # THIS IS THE CORRECT ONE
             except:
                 pass
             reference = raw_test[index]["labels"]
