@@ -8,7 +8,7 @@ import dataParser
 
 logger = logging.getLogger(__name__)
 
-KNN_NEIGHBORS = 3
+KNN_NEIGHBORS = 5
 WORLD_CITIES_PATH = "Data/world-cities.csv"
 
 
@@ -48,15 +48,14 @@ class Model:
         # self.train_features = pickle.load(open("train_features.p", 'rb'))
         # self.train_labels = pickle.load(open("train_labels.p", 'rb'))
 
-    def predict(self, path_to_test_set):
+    def predict(self, path_to_test_set,with_country=True, is_submission=False):
         """
         For each article in each file in path_to_test_set (dir) predicts the labels of the article
         :param path_to_test_set: directory with all the test reuters files
         :return: tuple of tuples, each inner tuple stores the labels of an article.
                     Outer tuple is ordered, inner is not
         """
-        predictions = []
-        expected = [] # TODO
+
 
         k = KNN_NEIGHBORS
 
@@ -75,25 +74,31 @@ class Model:
         logger.info('Running KNN with k = %s ...', k)
 
         cities_countries = Model.create_cities_dict(list(self.data.labels.keys()))
+        predictions = []
+        if not is_submission:
+            expected = []
         for index in range(test_features.shape[0]):
             instance = test_features[index]
             binary_predictions = self.knn_predict(instance, k)
             labels = self.labels_from_prediction(binary_predictions)
             try:
-                # city_label = self.data.data_articles[index]["dateline"].replace(" ", "")
-                city_label = raw_test[index]["dateline"].replace(" ", "") # THIS IS THE CORRECT ONE
+                city_label = raw_test[index]["dateline"].replace(" ", "")
             except Exception:
                 pass
-            reference = raw_test[index]["labels"]
+            else:
+                if with_country:
+                    if city_label in cities_countries.keys():
+                        if cities_countries[city_label] not in labels:
+                            labels.append(cities_countries[city_label])
+            finally:
+                predictions.append(tuple(labels))
+                if not is_submission:
+                    expected.append(tuple(raw_test[index]["labels"]))
 
-            if city_label in cities_countries.keys():
-                if cities_countries[city_label] not in labels:
-                    labels.append(cities_countries[city_label])
-            predictions.append(tuple(labels))
-            expected.append(tuple(reference)) # TODO
-
-        return tuple(predictions), tuple(expected)
-        # return tuple(predictions) TODO
+        if not is_submission:
+            return tuple(predictions), tuple(expected)
+        else:
+            return tuple(predictions)
 
     def labels_from_prediction(self, binary_predictions):
         """
@@ -180,10 +185,8 @@ class Model:
 
     @staticmethod
     def cosine_distance(x, y):
-
         """
         Calculates cosine similarity between two lists
-
         Assumes lists are of same length
         :param x: list
         :param y: list

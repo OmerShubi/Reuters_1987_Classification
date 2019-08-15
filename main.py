@@ -5,6 +5,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 import model
 import pickleHelper
 
+
 def main():
     """
 
@@ -17,10 +18,11 @@ def main():
 
     logger.info("********** NEW RUN **********")
 
-    # *******Change debug to True for small dataset ********
-    debug = True
+    # *******Change train_on_dataset to True for small dataset ********
+    train_on_full_dataset = False
+    is_submission = False
 
-    if debug:
+    if train_on_full_dataset:
         train_data_dir = "Data/train_data"
         test_data_dir = "Data/reuters_test_data"
     else:
@@ -30,9 +32,11 @@ def main():
     logger.info("Initiating training with data from '%s' directory", train_data_dir)
     knn_model = model.Model(train_data_dir)
 
-    logger.info("Predicting testing with data from '%s' directory", test_data_dir)
-    # predictions = knn_model.predict(test_data_dir) TODO
-    predictions, reference = knn_model.predict(test_data_dir)
+    logger.info("Predicting testing with data with countries from '%s' directory", test_data_dir)
+    if is_submission:
+        predictions = knn_model.predict(test_data_dir, is_submission=True)
+    else:
+        predictions, reference = knn_model.predict(test_data_dir)
 
     logger.info("Prediction complete")
 
@@ -43,9 +47,9 @@ def main():
     # except FileNotFoundError:
     #     returned_predictions = knn_model.predict(test_data_dir)
 
-    print(predictions)
-    # print(returned_predictions)
-    print(reference)
+    # print(predictions)
+    # print(reference)
+
     mlb = MultiLabelBinarizer()
     r = mlb.fit_transform(reference)
     p = mlb.transform(predictions)
