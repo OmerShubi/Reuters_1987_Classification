@@ -3,9 +3,13 @@ import logging.config
 
 import sklearn.metrics
 from sklearn.preprocessing import MultiLabelBinarizer
-from datetime import date
+from datetime import datetime
 
 import model
+
+
+def get_file_name_datetime(prefix, suffix='', file_type='p'):
+    return prefix + "-" + str(datetime.now().strftime("%Y-%m-%d-%H%M")) + suffix + "." + file_type
 
 
 def main():
@@ -39,8 +43,8 @@ def main():
 
     logger.info("Prediction complete")
 
-    name = "Pickles/"+get_file_name_datetime("predictions")
-    pickle.dump(predictions, name)
+    name = "Pickles/" + get_file_name_datetime("predictions")
+    pickle.dump(predictions, open(name, 'wb'))
     logger.info("Prediction saved to %s", name)
 
     print(predictions)
@@ -60,5 +64,3 @@ if __name__ == "__main__":
     main()
 
 
-def get_file_name_datetime(prefix, suffix='', file_type='p'):
-    return prefix + "-" + str(date.today()) + suffix + "." + file_type
